@@ -35,6 +35,12 @@ const NEIGHBORHOODS = [
   { name: 'Porter Square', lat: 42.3882, lng: -71.1199 },
   { name: 'Inman Square', lat: 42.3739, lng: -71.1012 },
   { name: 'East Cambridge', lat: 42.3720, lng: -71.0810 },
+  { name: 'North Cambridge', lat: 42.3970, lng: -71.1330 },
+  { name: 'West Cambridge', lat: 42.3798, lng: -71.1420 },
+  { name: 'Cambridgeport', lat: 42.3590, lng: -71.1100 },
+  { name: 'Mid-Cambridge', lat: 42.3710, lng: -71.1080 },
+  { name: 'Riverside', lat: 42.3620, lng: -71.1150 },
+  { name: 'Agassiz', lat: 42.3820, lng: -71.1180 },
   // Somerville
   { name: 'Davis Square', lat: 42.3963, lng: -71.1220 },
   { name: 'Union Square', lat: 42.3797, lng: -71.0946 },
@@ -48,7 +54,10 @@ const NEIGHBORHOODS = [
   { name: 'Brookline Village', lat: 42.3318, lng: -71.1173 },
   { name: 'Washington Square', lat: 42.3354, lng: -71.1396 },
   // Medford / Everett
+  { name: 'Medford', lat: 42.4260, lng: -71.1089 },
   { name: 'Medford Square', lat: 42.4184, lng: -71.1061 },
+  { name: 'West Medford', lat: 42.4191, lng: -71.1370 },
+  { name: 'Tufts', lat: 42.4085, lng: -71.1183 },
   { name: 'Everett', lat: 42.4084, lng: -71.0537 },
 ]
 
@@ -57,6 +66,10 @@ function labelIcon(name) {
   return L.divIcon({
     className: 'hood-label',
     html: `<span style="
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -50%);
       font-family: var(--font-display);
       font-size: 10px;
       font-weight: 700;
