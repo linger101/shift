@@ -416,13 +416,14 @@ export default function App() {
     setOutgoingRequests(outgoing)
   }
 
-  const addFriend = async (addresseeId) => {
+  const addFriend = async (addresseeId, addresseeUsername) => {
     if (!profile) return
     const result = await db.sendFriendRequest(profile.id, addresseeId)
     if (!result) { alert('Could not send friend request. You may have already sent one to this user.'); return }
     await refreshFriends(profile.id)
     setFriendResults([])
     setFriendSearch('')
+    setFriendsTab('requests')
   }
 
   const acceptFriend = async (req) => {
@@ -672,7 +673,7 @@ export default function App() {
               <>
                 {/* Sub-nav */}
                 <div style={{ display: 'flex', gap: 0, marginBottom: 20, border: '1px solid var(--bd)', borderRadius: 6, overflow: 'hidden' }}>
-                  {[{ id: 'feed', l: 'Activity Feed' }, { id: 'manage', l: `Friends${friends.length ? ` (${friends.length})` : ''}` }, { id: 'requests', l: `Requests${friendRequests.length ? ` (${friendRequests.length})` : ''}` }].map((t, i) => (
+                  {[{ id: 'feed', l: 'Activity Feed' }, { id: 'manage', l: `Friends${friends.length ? ` (${friends.length})` : ''}` }, { id: 'requests', l: `Requests${(friendRequests.length + outgoingRequests.length) ? ` (${friendRequests.length + outgoingRequests.length})` : ''}` }].map((t, i) => (
                     <button key={t.id} onClick={() => setFriendsTab(t.id)} style={{
                       flex: 1, padding: '9px 0', background: friendsTab === t.id ? 'rgba(74,103,65,0.1)' : 'transparent',
                       border: 'none', borderRight: i < 2 ? '1px solid var(--bd)' : 'none',
