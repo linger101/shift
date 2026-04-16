@@ -129,7 +129,7 @@ export async function getFriendships(userId) {
 
   const accepted = data
     .filter(f => f.status === 'accepted')
-    .map(f => f.requester_id === userId ? f.addressee : f.requester)
+    .map(f => ({ ...(f.requester_id === userId ? f.addressee : f.requester), friendshipId: f.id }))
 
   const incoming = data.filter(f => f.status === 'pending' && f.addressee_id === userId)
 
@@ -143,4 +143,19 @@ export async function getFriendships(userId) {
 export async function updateFriendship(friendshipId, status) {
   if (!supabase) return
   await supabase.from('friendships').update({ status }).eq('id', friendshipId)
+}
+
+export async function removeFriend(friendshipId) {
+  if (!supabase) return
+  await supabase.from('friendships').delete().eq('id', friendshipId)
+}
+
+export async function getReviewsByUser(userId) {
+  if (!supabase) return []
+  const { data } = await supabase
+    .from('reviews')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+  return data || []
 }

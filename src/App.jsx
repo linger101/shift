@@ -314,6 +314,9 @@ export default function App() {
   const [outgoingRequests, setOutgoingRequests] = useState([])
   const [friendSearch, setFriendSearch] = useState('')
   const [friendResults, setFriendResults] = useState([])
+  const [friendsTab, setFriendsTab] = useState('feed') // 'feed' | 'manage' | 'requests'
+  const [viewingFriend, setViewingFriend] = useState(null) // { id, username, friendshipId }
+  const [friendProfileData, setFriendProfileData] = useState(null) // { reviews, favorites }
 
   // Load session + data
   useEffect(() => {
@@ -417,12 +420,27 @@ export default function App() {
   const acceptFriend = async (req) => {
     await db.updateFriendship(req.id, 'accepted')
     setFriendRequests(prev => prev.filter(r => r.id !== req.id))
-    setFriends(prev => [...prev, req.requester])
+    setFriends(prev => [...prev, { ...req.requester, friendshipId: req.id }])
   }
 
   const declineFriend = async (req) => {
     await db.updateFriendship(req.id, 'declined')
     setFriendRequests(prev => prev.filter(r => r.id !== req.id))
+  }
+
+  const removeFriend = async (friend) => {
+    await db.removeFriend(friend.friendshipId)
+    setFriends(prev => prev.filter(f => f.id !== friend.id))
+    if (viewingFriend?.id === friend.id) { setViewingFriend(null); setFriendProfileData(null) }
+  }
+
+  const viewFriend = async (friend) => {
+    setViewingFriend(friend)
+    const [reviews, profileData] = await Promise.all([
+      db.getReviewsByUser(friend.id),
+      db.getProfile(friend.id),
+    ])
+    setFriendProfileData({ reviews, favorites: profileData?.favorites || [] })
   }
 
   const tog = (arr, setArr, val) => setArr(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val])
@@ -513,15 +531,15 @@ export default function App() {
                 )}
               </div>
               <button onClick={() => setView(view === 'list' ? 'map' : 'list')} style={{
-                padding: '9px 14px', background: view === 'map' ? 'rgba(74,103,65,0.1)' : 'var(--bg-card)',
-                border: `1px solid ${view === 'map' ? 'var(--green-dim)' : 'var(--bd)'}`, borderRadius: 4,
-                color: view === 'map' ? 'var(--green)' : 'var(--text-faint)', cursor: 'pointer', fontSize: 12,
+                padding: '9px 14px', background: 'var(--green)',
+                border: '1px solid var(--green-dim)', borderRadius: 4,
+                color: '#fff', cursor: 'pointer', fontSize: 12,
                 fontWeight: 700, whiteSpace: 'nowrap', fontFamily: 'var(--font-display)'
               }}>{view === 'map' ? 'List' : 'Map'}</button>
               <button onClick={showFilters ? () => setShowFilters(false) : openFilters} style={{
-                padding: '9px 14px', background: afc ? 'rgba(200,169,110,0.1)' : 'var(--bg-card)',
-                border: `1px solid ${afc ? 'var(--gold-dim)' : 'var(--bd)'}`, borderRadius: 4,
-                color: afc ? 'var(--gold)' : 'var(--text-faint)', cursor: 'pointer', fontWeight: 700,
+                padding: '9px 14px', background: 'var(--green)',
+                border: '1px solid var(--green-dim)', borderRadius: 4,
+                color: '#fff', cursor: 'pointer', fontWeight: 700,
                 fontSize: 12, whiteSpace: 'nowrap', fontFamily: 'var(--font-display)'
               }}>Filters{afc ? ` (${afc})` : ''}</button>
             </div>
@@ -581,96 +599,186 @@ export default function App() {
       <div style={{ maxWidth: 680, margin: '0 auto', padding: tab === 'activity' || view === 'list' ? '12px 16px 80px' : '0' }}>
         {tab === 'activity' ? (
           <div>
-            <h2 style={{ fontSize: 18, fontFamily: 'var(--font-display)', fontWeight: 700, margin: '0 0 16px' }}>FRIENDS</h2>
-
             {!userData ? (
-              <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>Sign in to add friends and see their reviews.</p>
-            ) : (
-              <>
-                {/* Pending Requests */}
-                {friendRequests.length > 0 && (
-                  <div style={{ marginBottom: 20 }}>
-                    <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--gold)', margin: '0 0 8px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Pending Requests ({friendRequests.length})</p>
-                    {friendRequests.map(req => (
-                      <div key={req.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', marginBottom: 6, background: 'var(--bg-card)', borderRadius: 4, border: '1px solid var(--bd)', borderLeft: '2px solid var(--gold-dim)' }}>
-                        <span style={{ fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-display)' }}>@{req.requester?.username}</span>
-                        <div style={{ display: 'flex', gap: 6 }}>
-                          <button onClick={() => acceptFriend(req)} style={{ padding: '5px 12px', background: 'var(--green)', border: 'none', borderRadius: 3, color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Accept</button>
-                          <button onClick={() => declineFriend(req)} style={{ padding: '5px 12px', background: 'none', border: '1px solid var(--bd)', borderRadius: 3, color: 'var(--text-faint)', fontWeight: 700, cursor: 'pointer', fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Decline</button>
-                        </div>
-                      </div>
-                    ))}
+              <p style={{ color: 'var(--text-faint)', fontSize: 13, padding: '20px 0' }}>Sign in to add friends and see their reviews.</p>
+            ) : viewingFriend ? (
+              /* ── Friend Profile ── */
+              <div>
+                <button onClick={() => { setViewingFriend(null); setFriendProfileData(null) }} style={{ background: 'none', border: 'none', color: 'var(--text-faint)', cursor: 'pointer', fontSize: 13, padding: '0 0 16px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  ← Back to Friends
+                </button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, padding: '16px 20px', background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--bd)' }}>
+                  <div>
+                    <p style={{ margin: 0, fontSize: 20, fontWeight: 700, fontFamily: 'var(--font-display)' }}>@{viewingFriend.username}</p>
+                    <p style={{ margin: '4px 0 0', fontSize: 12, color: 'var(--text-faint)' }}>
+                      {friendProfileData ? `${friendProfileData.reviews.length} reviews · ${friendProfileData.favorites.length} favorites` : 'Loading...'}
+                    </p>
                   </div>
-                )}
+                  <button onClick={() => removeFriend(viewingFriend)} style={{ padding: '7px 16px', background: 'none', border: '1px solid rgba(160,82,45,0.4)', borderRadius: 6, color: 'var(--red-bright)', cursor: 'pointer', fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>
+                    Remove Friend
+                  </button>
+                </div>
 
-                {/* Add Friend */}
-                <div style={{ marginBottom: 20, padding: 16, background: 'var(--bg-card)', borderRadius: 4, border: '1px solid var(--bd)' }}>
-                  <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 10px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Add Friend</p>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    <input value={friendSearch} onChange={e => setFriendSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && searchFriends()} placeholder="Search by username..."
-                      style={{ flex: 1, padding: '8px 12px', background: '#fff', border: '1px solid var(--bd)', borderRadius: 4, color: 'var(--text)', fontSize: 13 }} />
-                    <button onClick={searchFriends} style={{ padding: '8px 16px', background: 'var(--green)', border: 'none', borderRadius: 4, color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 11, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Search</button>
-                  </div>
-                  {friendResults.length > 0 && (
-                    <div style={{ marginTop: 8 }}>
-                      {friendResults.filter(u => u.id !== profile?.id).map(u => {
-                        const isFriend = friends.some(f => f.id === u.id)
-                        const isPending = outgoingRequests.includes(u.id)
+                {/* Their favorites */}
+                {friendProfileData && friendProfileData.favorites.length > 0 && (
+                  <div style={{ marginBottom: 20 }}>
+                    <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 10px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Favorites ({friendProfileData.favorites.length})</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {friendProfileData.favorites.map(barId => {
+                        const bar = BARS.find(b => b.id === barId)
+                        if (!bar) return null
                         return (
-                          <div key={u.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid var(--bd)' }}>
-                            <span style={{ fontSize: 13, color: 'var(--text)', fontFamily: 'var(--font-display)' }}>@{u.username}</span>
-                            {isFriend ? (
-                              <span style={{ fontSize: 11, color: 'var(--green)', fontWeight: 700, fontFamily: 'var(--font-display)' }}>Friends ✓</span>
-                            ) : isPending ? (
-                              <span style={{ fontSize: 11, color: 'var(--text-faint)', fontWeight: 700, fontFamily: 'var(--font-display)' }}>Pending</span>
-                            ) : (
-                              <button onClick={() => addFriend(u.id)} style={{ padding: '4px 12px', background: 'var(--green)', border: 'none', borderRadius: 3, color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Add</button>
-                            )}
+                          <div key={barId} onClick={() => setDetail(bar)} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'var(--bg-card)', borderRadius: 6, border: '1px solid var(--bd)', cursor: 'pointer' }}>
+                            <div>
+                              <p style={{ margin: 0, fontSize: 14, fontWeight: 700, fontFamily: 'var(--font-display)' }}>{bar.name}</p>
+                              <p style={{ margin: '2px 0 0', fontSize: 11, color: 'var(--text-faint)' }}>{bar.hood} · {bar.type}</p>
+                            </div>
+                            <Stars r={Math.round(bar.rating)} sz={12} />
                           </div>
                         )
                       })}
-                      {friendResults.filter(u => u.id !== profile?.id).length === 0 && (
-                        <p style={{ margin: '8px 0 0', fontSize: 12, color: 'var(--text-faint)' }}>No users found.</p>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* Current Friends */}
-                {friends.length > 0 && (
-                  <div style={{ marginBottom: 20 }}>
-                    <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 8px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Your Friends ({friends.length})</p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                      {friends.map(f => (
-                        <span key={f.id} style={{ padding: '4px 12px', background: 'rgba(74,103,65,0.1)', border: '1px solid var(--green-dim)', borderRadius: 3, fontSize: 12, color: 'var(--green)', fontFamily: 'var(--font-display)', fontWeight: 600 }}>@{f.username}</span>
-                      ))}
                     </div>
                   </div>
                 )}
 
-                {/* Friend Activity */}
-                <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 10px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Friend Activity</p>
-                {friends.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>Add friends above to see their bar reviews here.</p>}
-                {friends.length > 0 && friendReviews.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>No reviews from friends yet.</p>}
-                {friendReviews.map((r, i) => {
+                {/* Their reviews */}
+                <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 10px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Reviews {friendProfileData ? `(${friendProfileData.reviews.length})` : ''}
+                </p>
+                {!friendProfileData && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>Loading...</p>}
+                {friendProfileData && friendProfileData.reviews.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>No reviews yet.</p>}
+                {friendProfileData?.reviews.map((r, i) => {
                   const bar = BARS.find(b => b.id === r.bar_id)
                   return (
-                    <div key={i} onClick={() => bar && setDetail(bar)} style={{
-                      padding: 14, marginBottom: 6, background: 'var(--bg-card)', borderRadius: 4,
-                      border: '1px solid var(--bd)', cursor: 'pointer', borderLeft: '2px solid var(--gold-dim)'
-                    }}>
+                    <div key={i} onClick={() => bar && setDetail(bar)} style={{ padding: 14, marginBottom: 6, background: 'var(--bg-card)', borderRadius: 6, border: '1px solid var(--bd)', cursor: 'pointer', borderLeft: '2px solid var(--gold-dim)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-display)' }}>@{r.username}</span>
-                        <span style={{ fontSize: 10, color: 'var(--text-faint)' }}>{new Date(r.created_at).toLocaleDateString()}</span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                        <span style={{ fontSize: 14, fontWeight: 700, fontFamily: 'var(--font-display)' }}>{bar?.name || 'Unknown'}</span>
+                        <span style={{ fontSize: 14, fontWeight: 700, fontFamily: 'var(--font-display)' }}>{bar?.name || 'Unknown bar'}</span>
                         <Stars r={r.rating} sz={12} />
                       </div>
-                      <p style={{ margin: 0, fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.4 }}>{r.text}</p>
+                      <p style={{ margin: '0 0 4px', fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.4 }}>{r.text}</p>
+                      <p style={{ margin: 0, fontSize: 10, color: 'var(--text-faint)' }}>{new Date(r.created_at).toLocaleDateString()}</p>
                     </div>
                   )
                 })}
+              </div>
+            ) : (
+              <>
+                {/* Sub-nav */}
+                <div style={{ display: 'flex', gap: 0, marginBottom: 20, border: '1px solid var(--bd)', borderRadius: 6, overflow: 'hidden' }}>
+                  {[{ id: 'feed', l: 'Activity Feed' }, { id: 'manage', l: `Friends${friends.length ? ` (${friends.length})` : ''}` }, { id: 'requests', l: `Requests${friendRequests.length ? ` (${friendRequests.length})` : ''}` }].map((t, i) => (
+                    <button key={t.id} onClick={() => setFriendsTab(t.id)} style={{
+                      flex: 1, padding: '9px 0', background: friendsTab === t.id ? 'rgba(74,103,65,0.1)' : 'transparent',
+                      border: 'none', borderRight: i < 2 ? '1px solid var(--bd)' : 'none',
+                      color: friendsTab === t.id ? 'var(--green)' : 'var(--text-faint)', fontWeight: 700, cursor: 'pointer',
+                      fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px'
+                    }}>{t.l}</button>
+                  ))}
+                </div>
+
+                {/* ── Activity Feed ── */}
+                {friendsTab === 'feed' && (
+                  <>
+                    {friends.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>Add friends to see their bar reviews here.</p>}
+                    {friends.length > 0 && friendReviews.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>No reviews from friends yet.</p>}
+                    {friendReviews.map((r, i) => {
+                      const bar = BARS.find(b => b.id === r.bar_id)
+                      return (
+                        <div key={i} onClick={() => bar && setDetail(bar)} style={{ padding: 14, marginBottom: 6, background: 'var(--bg-card)', borderRadius: 6, border: '1px solid var(--bd)', cursor: 'pointer', borderLeft: '2px solid var(--gold-dim)' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-display)' }}>@{r.username}</span>
+                            <span style={{ fontSize: 10, color: 'var(--text-faint)' }}>{new Date(r.created_at).toLocaleDateString()}</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                            <span style={{ fontSize: 14, fontWeight: 700, fontFamily: 'var(--font-display)' }}>{bar?.name || 'Unknown'}</span>
+                            <Stars r={r.rating} sz={12} />
+                          </div>
+                          <p style={{ margin: 0, fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.4 }}>{r.text}</p>
+                        </div>
+                      )
+                    })}
+                  </>
+                )}
+
+                {/* ── Manage Friends ── */}
+                {friendsTab === 'manage' && (
+                  <>
+                    {/* Add friend search */}
+                    <div style={{ marginBottom: 20, padding: 16, background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--bd)' }}>
+                      <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 10px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Add a Friend</p>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <input value={friendSearch} onChange={e => setFriendSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && searchFriends()} placeholder="Search by username..."
+                          style={{ flex: 1, padding: '8px 12px', background: '#fff', border: '1px solid var(--bd)', borderRadius: 6, color: 'var(--text)', fontSize: 13 }} />
+                        <button onClick={searchFriends} style={{ padding: '8px 16px', background: 'var(--green)', border: 'none', borderRadius: 6, color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 11, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Search</button>
+                      </div>
+                      {friendResults.length > 0 && (
+                        <div style={{ marginTop: 10 }}>
+                          {friendResults.filter(u => u.id !== profile?.id).map(u => {
+                            const isFriend = friends.some(f => f.id === u.id)
+                            const isPending = outgoingRequests.includes(u.id)
+                            return (
+                              <div key={u.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid var(--bd)' }}>
+                                <span style={{ fontSize: 13, color: 'var(--text)', fontFamily: 'var(--font-display)' }}>@{u.username}</span>
+                                {isFriend ? <span style={{ fontSize: 11, color: 'var(--green)', fontWeight: 700 }}>Friends</span>
+                                  : isPending ? <span style={{ fontSize: 11, color: 'var(--text-faint)', fontWeight: 700 }}>Request Sent</span>
+                                  : <button onClick={() => addFriend(u.id)} style={{ padding: '4px 12px', background: 'var(--green)', border: 'none', borderRadius: 4, color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Add</button>}
+                              </div>
+                            )
+                          })}
+                          {friendResults.filter(u => u.id !== profile?.id).length === 0 && <p style={{ margin: '8px 0 0', fontSize: 12, color: 'var(--text-faint)' }}>No users found.</p>}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Friends list */}
+                    {friends.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>No friends yet. Search for someone above.</p>}
+                    {friends.map(f => {
+                      const theirReviews = reviews.filter(r => r.user_id === f.id)
+                      return (
+                        <div key={f.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', marginBottom: 8, background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--bd)' }}>
+                          <div style={{ cursor: 'pointer' }} onClick={() => viewFriend(f)}>
+                            <p style={{ margin: 0, fontSize: 15, fontWeight: 700, fontFamily: 'var(--font-display)' }}>@{f.username}</p>
+                            <p style={{ margin: '2px 0 0', fontSize: 11, color: 'var(--text-faint)' }}>{theirReviews.length} review{theirReviews.length !== 1 ? 's' : ''}</p>
+                          </div>
+                          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                            <button onClick={() => viewFriend(f)} style={{ padding: '6px 14px', background: 'var(--green)', border: 'none', borderRadius: 6, color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 11, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>View</button>
+                            <button onClick={() => removeFriend(f)} style={{ padding: '6px 14px', background: 'none', border: '1px solid rgba(160,82,45,0.35)', borderRadius: 6, color: 'var(--red-bright)', fontWeight: 700, cursor: 'pointer', fontSize: 11, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Remove</button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </>
+                )}
+
+                {/* ── Requests ── */}
+                {friendsTab === 'requests' && (
+                  <>
+                    {/* Incoming */}
+                    <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 10px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Incoming ({friendRequests.length})</p>
+                    {friendRequests.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13, marginBottom: 20 }}>No pending requests.</p>}
+                    {friendRequests.map(req => (
+                      <div key={req.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', marginBottom: 8, background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--bd)', borderLeft: '3px solid var(--gold-dim)' }}>
+                        <p style={{ margin: 0, fontSize: 14, fontWeight: 600, fontFamily: 'var(--font-display)' }}>@{req.requester?.username}</p>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button onClick={() => acceptFriend(req)} style={{ padding: '6px 14px', background: 'var(--green)', border: 'none', borderRadius: 6, color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 11, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Accept</button>
+                          <button onClick={() => declineFriend(req)} style={{ padding: '6px 14px', background: 'none', border: '1px solid var(--bd)', borderRadius: 6, color: 'var(--text-faint)', fontWeight: 700, cursor: 'pointer', fontSize: 11, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Decline</button>
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Outgoing */}
+                    {outgoingRequests.length > 0 && (
+                      <>
+                        <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '20px 0 10px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Sent ({outgoingRequests.length})</p>
+                        {outgoingRequests.map(id => (
+                          <div key={id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', marginBottom: 8, background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--bd)' }}>
+                            <p style={{ margin: 0, fontSize: 14, fontWeight: 600, fontFamily: 'var(--font-display)', color: 'var(--text-dim)' }}>Request sent</p>
+                            <span style={{ fontSize: 11, color: 'var(--text-faint)', fontFamily: 'var(--font-display)', fontWeight: 700 }}>Pending</span>
+                          </div>
+                        ))}
+                      </>
+                    )}
+                  </>
+                )}
               </>
             )}
           </div>
