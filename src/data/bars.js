@@ -18,7 +18,7 @@ export const BARS = [
   {id:15,name:"The Bebop",hood:"Fenway",area:"Boston",type:"Irish Pub",vibe:["Live Music","Chill","Young Crowd"],music:true,karaoke:false,rating:4.5,revCt:1223,lat:42.3467,lng:-71.0887,price:2,desc:"Live music every night in the Berklee corridor. Jazz, folk, rock — the musicians are legit."},
   {id:16,name:"A.T. O'Keeffe's",hood:"Back Bay",area:"Boston",type:"Sports Bar",vibe:["Sports","Soccer","Chill"],music:false,karaoke:false,rating:4.5,revCt:867,lat:42.3484,lng:-71.0844,price:2,desc:"The spot for European football. Catches every Premier League and Champions League match."},
   {id:56,name:"Foxhole",hood:"Back Bay",area:"Boston",type:"Pub",vibe:["Late Night","Chill","Young Crowd"],music:false,karaoke:false,rating:4.1,revCt:175,lat:42.3496,lng:-71.0836,price:2,desc:"Newbury Street basement bar. Trivia, great burgers, and a late-night crowd that keeps it real."},
-  {id:57,name:"The Street Bar",hood:"Back Bay",area:"Boston",type:"Cocktail Bar",vibe:["Upscale","Date Night","Chill"],music:false,karaoke:false,rating:4.3,revCt:268,lat:42.3528,lng:-71.0716,price:3,desc:"Elegant hotel bar overlooking the Public Garden. Old-school charm, fireplace, and strong martinis."},
+  {id:57,name:"The Street Bar",hood:"Back Bay",area:"Boston",type:"Cocktail Bar",vibe:["Upscale","Date Night","Chill"],music:false,karaoke:false,rating:4.3,revCt:268,lat:42.3528,lng:-71.0716,price:3,desc:"Elegant bar at The Newbury Boston overlooking the Public Garden. Old-school charm, fireplace, and strong martinis."},
   {id:17,name:"Beehive",hood:"South End",area:"Boston",type:"Lounge",vibe:["Live Music","Date Night","Dancing","Upscale"],music:true,karaoke:false,rating:4.4,revCt:3387,lat:42.3444,lng:-71.0715,price:2,desc:"Underground jazz club meets upscale lounge. Live music nightly with a buzzing scene."},
   {id:58,name:"Wink and Nod",hood:"South End",area:"Boston",type:"Cocktail Bar",vibe:["Speakeasy","Late Night","Dancing"],music:false,karaoke:false,rating:4.0,revCt:289,lat:42.3467,lng:-71.0698,price:3,desc:"Basement speakeasy with rotating pop-up chefs and creative cocktails. Moody and mysterious."},
   {id:59,name:"Delux Cafe",hood:"South End",area:"Boston",type:"Dive Bar",vibe:["Cash Only","Chill","Young Crowd"],music:false,karaoke:false,rating:4.7,revCt:748,lat:42.3463,lng:-71.0729,price:1,desc:"Cash-only dive with album covers on the walls and holiday lights year-round. Jerk chicken tacos are legendary."},
@@ -141,6 +141,67 @@ export const BARS = [
   {id:125,name:"Cheers",hood:"Beacon Hill",area:"Boston",type:"Pub",vibe:["Iconic","Big Crowds"],music:false,karaoke:false,rating:3.7,revCt:6842,lat:42.3554,lng:-71.0716,price:2,desc:"The bar that inspired the TV show. Tourist magnet with a gift shop upstairs and a proper pub downstairs on Beacon Street."},
   {id:126,name:"Hill Tavern",hood:"Beacon Hill",area:"Boston",type:"Pub",vibe:["Young Crowd","Late Night","Sports","Brunch"],music:false,karaoke:false,rating:4.2,revCt:978,lat:42.3616,lng:-71.0653,price:2,desc:"Cambridge Street standby with a young crowd, solid burgers, and weekend brunch with boozy options."},
   {id:127,name:"Tip Tap Room",hood:"Beacon Hill",area:"Boston",type:"Pub",vibe:["Craft Beer","Date Night","Small Plates"],music:false,karaoke:false,rating:4.3,revCt:1245,lat:42.3612,lng:-71.0640,price:2,desc:"Beacon Hill gastropub known for creative sliders, an impressive craft beer wall, and a stylish two-level layout."},
+
+  // ─── Charlestown ───
+  {id:130,name:"Warren Tavern",hood:"Charlestown",area:"Charlestown",type:"Pub",vibe:["Iconic","Chill"],music:false,karaoke:false,rating:4.4,revCt:3215,lat:42.3788,lng:-71.0608,price:2,desc:"One of America's oldest pubs, frequented by Paul Revere and George Washington. Great burgers and a Charlestown institution since 1780."},
+  {id:131,name:"Brewer's Fork",hood:"Charlestown",area:"Charlestown",type:"Pub",vibe:["Craft Beer","Date Night","Patio"],music:false,karaoke:false,rating:4.5,revCt:1087,lat:42.3791,lng:-71.0565,price:2,desc:"Wood-fired pizza and an incredible craft beer list in a warm Charlestown space. Back patio is perfect in summer."},
+  {id:132,name:"Monument Restaurant & Tavern",hood:"Charlestown",area:"Charlestown",type:"Pub",vibe:["Brunch","Chill","Sports"],music:false,karaoke:false,rating:4.2,revCt:645,lat:42.3803,lng:-71.0600,price:2,desc:"Neighborhood favorite near the Bunker Hill Monument. Reliable brunch, cold beer, and a welcoming Townie atmosphere."},
+  {id:133,name:"Pier 6",hood:"Charlestown",area:"Charlestown",type:"Pub",vibe:["Views","Patio","Chill"],music:false,karaoke:false,rating:4.3,revCt:892,lat:42.3730,lng:-71.0480,price:2,desc:"Waterfront spot at the Charlestown Navy Yard. Harbor views, seafood, and cocktails right on the pier."},
+
+  // ─── Chinatown / Downtown Crossing ───
+  {id:134,name:"Shojo",hood:"Chinatown",area:"Boston",type:"Lounge",vibe:["Trendy","Late Night","Groups"],music:false,karaoke:false,rating:4.3,revCt:1243,lat:42.3515,lng:-71.0618,price:2,desc:"Asian-inspired cocktails and late-night bites in Chinatown. Bold flavors, loud music, and a packed weekend scene."},
+  {id:135,name:"JM Curley",hood:"Downtown Crossing",area:"Boston",type:"Pub",vibe:["Chill","Late Night","Craft Beer"],music:false,karaoke:false,rating:4.4,revCt:876,lat:42.3548,lng:-71.0615,price:2,desc:"Temple Place gem with Bogie's Place cocktail bar hidden upstairs. Great burgers, craft beer, and a downtown crowd."},
+
+  // ─── Cambridge additions ───
+  {id:136,name:"Grendel's Den",hood:"Harvard Square",area:"Cambridge",type:"Pub",vibe:["Cheap Drinks","Young Crowd","Chill"],music:false,karaoke:false,rating:4.3,revCt:1834,lat:42.3725,lng:-71.1200,price:1,desc:"Harvard Square basement bar since 1971. Half-price food at happy hour, cheap drinks, and a legendary Supreme Court case about its liquor license."},
+  {id:137,name:"Daedalus",hood:"Harvard Square",area:"Cambridge",type:"Pub",vibe:["Brunch","Patio","Chill"],music:false,karaoke:false,rating:4.2,revCt:1456,lat:42.3730,lng:-71.1205,price:2,desc:"Multi-level Harvard Square staple with rooftop patio. Great brunch, people-watching, and a lively bar scene."},
+  {id:138,name:"The Sinclair",hood:"Harvard Square",area:"Cambridge",type:"Lounge",vibe:["Live Music","Trendy","Late Night"],music:true,karaoke:false,rating:4.5,revCt:987,lat:42.3740,lng:-71.1190,price:2,desc:"Intimate music venue and restaurant in Harvard Square. National touring acts, craft cocktails, and a balcony overlooking the stage."},
+
+  // ─── Somerville additions ───
+  {id:139,name:"Highland Kitchen",hood:"Highland Ave",area:"Somerville",type:"Pub",vibe:["Chill","Craft Beer","Brunch"],music:false,karaoke:false,rating:4.5,revCt:1367,lat:42.3925,lng:-71.1105,price:2,desc:"Beloved neighborhood bar with creative comfort food, great bourbon selection, and a packed Sunday jazz brunch."},
+  {id:140,name:"PJ Ryan's",hood:"Teele Square",area:"Somerville",type:"Irish Pub",vibe:["Sports","Chill","Trivia"],music:false,karaoke:false,rating:4.4,revCt:423,lat:42.3985,lng:-71.1240,price:2,desc:"Corner Irish pub near Davis Square. Soccer mornings, Tuesday trivia, and a warm neighborhood feel."},
+  {id:141,name:"Painted Burro",hood:"Davis Square",area:"Somerville",type:"Pub",vibe:["Brunch","Groups","Trendy"],music:false,karaoke:false,rating:4.2,revCt:1156,lat:42.3958,lng:-71.1222,price:2,desc:"Upscale Mexican in Davis Square. Excellent margaritas, tableside guac, and a weekend brunch scene."},
+
+  // ─── Allston additions ───
+  {id:142,name:"Model Cafe",hood:"Allston",area:"Allston/Brighton",type:"Dive Bar",vibe:["Cash Only","Cheap Drinks","Pool"],music:false,karaoke:false,rating:4.2,revCt:287,lat:42.3536,lng:-71.1365,price:1,desc:"Allston's last true dive. Cash only, pool table, jukebox, and a cast of regulars straight out of a movie."},
+  {id:143,name:"Lone Star Taco Bar",hood:"Allston",area:"Allston/Brighton",type:"Pub",vibe:["Late Night","Young Crowd","Groups"],music:false,karaoke:false,rating:4.3,revCt:678,lat:42.3545,lng:-71.1300,price:2,desc:"Late-night tacos and margaritas on Cambridge Street. Perfect post-bar fuel with a lively atmosphere of its own."},
+
+  // ─── Fenway additions ───
+  {id:144,name:"Lansdowne Pub",hood:"Fenway",area:"Boston",type:"Pub",vibe:["Dancing","Live Music","Big Crowds","Late Night"],music:true,karaoke:false,rating:4.1,revCt:1345,lat:42.3471,lng:-71.0975,price:2,desc:"Lansdowne Street anchor with live music, DJs, and a packed dance floor. Goes off on game nights and weekends."},
+  {id:145,name:"Hojoko",hood:"Fenway",area:"Boston",type:"Lounge",vibe:["Trendy","Date Night","Asian Fusion"],music:false,karaoke:false,rating:4.4,revCt:892,lat:42.3465,lng:-71.0940,price:2,desc:"Japanese izakaya at The Verb Hotel. Creative cocktails, yakitori, and a rock-and-roll-meets-Tokyo atmosphere."},
+  {id:146,name:"Bill's Bar",hood:"Fenway",area:"Boston",type:"Dive Bar",vibe:["Live Music","Late Night","Young Crowd"],music:true,karaoke:false,rating:4.0,revCt:743,lat:42.3470,lng:-71.0978,price:1,desc:"Lansdowne Street dive with live music and cheap drinks. Gritty, loud, and unapologetically fun."},
+
+  // ─── North End addition ───
+  {id:147,name:"Parla",hood:"North End",area:"Boston",type:"Cocktail Bar",vibe:["Speakeasy","Date Night","Intimate"],music:false,karaoke:false,rating:4.6,revCt:534,lat:42.3641,lng:-71.0543,price:3,desc:"Hidden cocktail bar behind an unmarked door on Hanover Street. Intimate, inventive drinks, and a true North End speakeasy experience."},
+
+  // ─── South Boston addition ───
+  {id:148,name:"Fat Baby",hood:"South Boston",area:"Boston",type:"Lounge",vibe:["Late Night","Trendy","Groups"],music:false,karaoke:false,rating:4.3,revCt:567,lat:42.3390,lng:-71.0515,price:2,desc:"Tequila and tacos meet Southie nightlife. Creative cocktails, a late-night crowd, and a DJ-fueled weekend scene."},
+
+  // ─── South End additions ───
+  {id:149,name:"Franklin Cafe",hood:"South End",area:"Boston",type:"Pub",vibe:["Late Night","Chill","Date Night"],music:false,karaoke:false,rating:4.5,revCt:1287,lat:42.3423,lng:-71.0713,price:2,desc:"South End institution open until 1:30 AM. No sign out front, outstanding food, and a neighborhood bar feel that never gets old."},
+  {id:150,name:"Wally's Cafe Jazz Club",hood:"South End",area:"Boston",type:"Lounge",vibe:["Live Music","Iconic","Chill"],music:true,karaoke:false,rating:4.7,revCt:2134,lat:42.3385,lng:-71.0769,price:1,desc:"Legendary jazz club since 1947. Live music 365 days a year, no cover, and Berklee students jamming alongside pros in a tiny, electric room."},
+  {id:151,name:"Barcelona Wine Bar",hood:"South End",area:"Boston",type:"Wine Bar",vibe:["Date Night","Small Plates","Patio"],music:false,karaoke:false,rating:4.4,revCt:1567,lat:42.3448,lng:-71.0721,price:2,desc:"Spanish-inspired wine bar on Tremont. Excellent tapas, an approachable wine list, and a lively sidewalk patio."},
+  {id:152,name:"Anchovies",hood:"South End",area:"Boston",type:"Dive Bar",vibe:["Late Night","Cash Only","Cheap Drinks"],music:false,karaoke:false,rating:4.5,revCt:612,lat:42.3430,lng:-71.0775,price:1,desc:"Cash-only South End dive open until 1 AM. Cheap drinks, surprisingly great pizza, and a loyal local following."},
+
+  // ─── Jamaica Plain addition ───
+  {id:153,name:"Samuel Adams Taproom",hood:"Jamaica Plain",area:"Jamaica Plain",type:"Brewery",vibe:["Craft Beer","Iconic","Groups"],music:false,karaoke:false,rating:4.4,revCt:3456,lat:42.3142,lng:-71.1050,price:2,desc:"The original Sam Adams brewery. Free tours, a taproom with pilot batches you can not get anywhere else, and a piece of Boston beer history."},
+
+  // ─── Dorchester additions ───
+  {id:154,name:"Tavolo",hood:"Dorchester",area:"Dorchester",type:"Wine Bar",vibe:["Date Night","Small Plates","Chill"],music:false,karaoke:false,rating:4.5,revCt:534,lat:42.2845,lng:-71.0625,price:2,desc:"Italian wine bar and ristorante near Ashmont. Handmade pasta, a deep Italian wine list, and a warm neighborhood gem."},
+  {id:155,name:"The Blarney Stone",hood:"Dorchester",area:"Dorchester",type:"Irish Pub",vibe:["Sports","Cheap Drinks","Chill"],music:false,karaoke:false,rating:4.3,revCt:387,lat:42.2990,lng:-71.0610,price:1,desc:"Classic Dorchester Irish pub. Cheap pints, sports on every screen, and a neighborhood crowd that feels like family."},
+
+  // ─── Brookline addition ───
+  {id:156,name:"Washington Square Tavern",hood:"Washington Square",area:"Brookline",type:"Pub",vibe:["Chill","Date Night","Craft Beer"],music:false,karaoke:false,rating:4.4,revCt:823,lat:42.3395,lng:-71.1370,price:2,desc:"Brookline neighborhood gastropub with an outstanding craft beer list, seasonal menu, and a warm corner-bar vibe."},
+
+  // ─── Seaport additions ───
+  {id:157,name:"Cisco Brewers Seaport",hood:"Seaport",area:"Boston",type:"Brewery",vibe:["Patio","Big Crowds","Chill"],music:true,karaoke:false,rating:4.3,revCt:1876,lat:42.3535,lng:-71.0430,price:2,desc:"Massive outdoor beer garden on the waterfront. Live music, food trucks, lawn games, and Cisco brews on tap. The summer hangout."},
+  {id:158,name:"Lookout Rooftop",hood:"Seaport",area:"Boston",type:"Rooftop Bar",vibe:["Views","Trendy","Upscale"],music:false,karaoke:false,rating:4.2,revCt:987,lat:42.3518,lng:-71.0470,price:3,desc:"Rooftop bar at The Envoy Hotel with sweeping harbor views. Craft cocktails, fire pits, and the best sunset spot in the Seaport."},
+
+  // ─── Back Bay addition ───
+  {id:159,name:"Oak Long Bar + Kitchen",hood:"Back Bay",area:"Boston",type:"Cocktail Bar",vibe:["Upscale","Date Night","Iconic"],music:false,karaoke:false,rating:4.4,revCt:1234,lat:42.3488,lng:-71.0770,price:3,desc:"Grand cocktail bar inside the Fairmont Copley Plaza. Soaring ceilings, classic cocktails, and an old-Boston elegance that never fades."},
+
+  // ─── Roslindale ───
+  {id:160,name:"Distraction Brewing",hood:"Roslindale",area:"Boston",type:"Brewery",vibe:["Craft Beer","Chill","Patio"],music:false,karaoke:false,rating:4.4,revCt:312,lat:42.2835,lng:-71.1250,price:2,desc:"Small-batch neighborhood brewery in Roslindale Village. Rotating taps, a cozy taproom, and a dog-friendly patio."},
 ]
 
 export const ALL_TYPES = [...new Set(BARS.map(b => b.type))].sort()
@@ -177,6 +238,12 @@ export const BAR_WEBSITES = {
   95:  'https://www.trilliumbrewing.com',
   98:  'https://www.atwoodstavern.com',
   104: 'https://www.local149.com',
+  130: 'https://www.warrentavern.com',
+  131: 'https://www.brewersfork.com',
+  133: 'https://www.pier6charlestown.com',
+  145: 'https://www.hojokoboston.com',
+  150: 'https://www.wallyscafe.com',
+  153: 'https://www.samueladams.com',
   107: 'https://www.blackroseboston.com',
   110: 'https://www.bannerskitchenandtap.com',
   117: 'https://www.societyonhigh.com',
