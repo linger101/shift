@@ -198,9 +198,22 @@ function Auth({ onLogin }) {
   const [pw, setPw] = useState('')
   const [username, setUsername] = useState('')
   const [err, setErr] = useState('')
+  const [msg, setMsg] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const switchMode = (m) => { setMode(m); setErr(''); setMsg('') }
+
   const go = async () => {
+    if (mode === 'forgot') {
+      if (!email.trim()) { setErr('Enter your email'); return }
+      setLoading(true); setErr(''); setMsg('')
+      const res = await db.resetPassword(email)
+      if (res.error) { setErr(res.error); setLoading(false); return }
+      setMsg('Check your email for a reset link.')
+      setLoading(false)
+      return
+    }
+
     if (!email.trim() || !pw.trim()) { setErr('Fill in all fields'); return }
     if (mode === 'signup' && !username.trim()) { setErr('Username is required'); return }
     setLoading(true); setErr('')
@@ -222,45 +235,68 @@ function Auth({ onLogin }) {
       <div style={{ width: '100%', maxWidth: 360, textAlign: 'center' }}>
         <div style={{ marginBottom: 24 }}>
           <div style={{ display: 'inline-block', padding: '16px 40px', border: '2px solid var(--gold)', borderRadius: 4 }}>
-            <p style={{ margin: 0, fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '4px', color: 'var(--gold-dim)' }}>Est. 2025</p>
             <h1 style={{ margin: '2px 0', fontSize: 32, fontFamily: 'var(--font-display)', color: 'var(--text)', fontWeight: 700 }}>BARCRAWL</h1>
             <p style={{ margin: 0, fontSize: 15, fontFamily: 'var(--font-display)', color: 'var(--gold)' }}>Boston</p>
           </div>
         </div>
         <p style={{ color: 'var(--text-faint)', fontSize: 13, margin: '0 0 24px' }}>Discover. Rate. Share with friends.</p>
 
-        <div style={{ display: 'flex', marginBottom: 16, border: '1px solid var(--bd)', borderRadius: 4, overflow: 'hidden' }}>
-          {['login', 'signup'].map(m => (
-            <button key={m} onClick={() => { setMode(m); setErr('') }} style={{
-              flex: 1, padding: '10px 0', background: mode === m ? 'rgba(74,103,65,0.1)' : 'transparent',
-              border: 'none', color: mode === m ? 'var(--green)' : 'var(--text-faint)', fontWeight: 700,
-              cursor: 'pointer', fontSize: 11, fontFamily: 'var(--font-display)', textTransform: 'uppercase',
-              letterSpacing: '1.5px', borderRight: m === 'login' ? '1px solid var(--bd)' : 'none'
-            }}>{m === 'signup' ? 'Sign Up' : 'Log In'}</button>
-          ))}
-        </div>
+        {mode !== 'forgot' && (
+          <div style={{ display: 'flex', marginBottom: 16, border: '1px solid var(--bd)', borderRadius: 4, overflow: 'hidden' }}>
+            {['login', 'signup'].map(m => (
+              <button key={m} onClick={() => switchMode(m)} style={{
+                flex: 1, padding: '10px 0', background: mode === m ? 'rgba(74,103,65,0.1)' : 'transparent',
+                border: 'none', color: mode === m ? 'var(--green)' : 'var(--text-faint)', fontWeight: 700,
+                cursor: 'pointer', fontSize: 11, fontFamily: 'var(--font-display)', textTransform: 'uppercase',
+                letterSpacing: '1.5px', borderRight: m === 'login' ? '1px solid var(--bd)' : 'none'
+              }}>{m === 'signup' ? 'Sign Up' : 'Log In'}</button>
+            ))}
+          </div>
+        )}
+
+        {mode === 'forgot' && (
+          <p style={{ color: 'var(--text-dim)', fontSize: 12, margin: '0 0 16px' }}>Enter your email and we'll send a reset link.</p>
+        )}
 
         {mode === 'signup' && (
           <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Username"
             style={{ width: '100%', padding: '11px 14px', marginBottom: 8, background: 'var(--bg-card)', border: '1px solid var(--bd)', borderRadius: 4, color: 'var(--text)', fontSize: 14, boxSizing: 'border-box' }} />
         )}
-        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email"
+        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" onKeyDown={e => e.key === 'Enter' && mode === 'forgot' && go()}
           style={{ width: '100%', padding: '11px 14px', marginBottom: 8, background: 'var(--bg-card)', border: '1px solid var(--bd)', borderRadius: 4, color: 'var(--text)', fontSize: 14, boxSizing: 'border-box' }} />
-        <input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="Password" onKeyDown={e => e.key === 'Enter' && go()}
-          style={{ width: '100%', padding: '11px 14px', marginBottom: 12, background: 'var(--bg-card)', border: '1px solid var(--bd)', borderRadius: 4, color: 'var(--text)', fontSize: 14, boxSizing: 'border-box' }} />
+        {mode !== 'forgot' && (
+          <input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="Password" onKeyDown={e => e.key === 'Enter' && go()}
+            style={{ width: '100%', padding: '11px 14px', marginBottom: 12, background: 'var(--bg-card)', border: '1px solid var(--bd)', borderRadius: 4, color: 'var(--text)', fontSize: 14, boxSizing: 'border-box' }} />
+        )}
 
         {err && <p style={{ color: 'var(--red-bright)', fontSize: 12, margin: '0 0 8px' }}>{err}</p>}
+        {msg && <p style={{ color: 'var(--green)', fontSize: 12, margin: '0 0 8px' }}>{msg}</p>}
 
         <button onClick={go} disabled={loading} style={{
           width: '100%', padding: '12px 0', background: 'var(--green)', border: 'none', borderRadius: 4,
           color: '#fff', fontWeight: 700, fontSize: 13, cursor: 'pointer',
           fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1.5px'
-        }}>{loading ? '...' : mode === 'signup' ? 'Create Account' : 'Log In'}</button>
+        }}>{loading ? '...' : mode === 'signup' ? 'Create Account' : mode === 'forgot' ? 'Send Reset Link' : 'Log In'}</button>
 
-        <button onClick={() => onLogin(null)} style={{
-          background: 'none', border: 'none', color: 'var(--text-faint)', marginTop: 14,
-          cursor: 'pointer', fontSize: 12
-        }}>Browse without an account →</button>
+        {mode === 'login' && (
+          <button onClick={() => switchMode('forgot')} style={{
+            background: 'none', border: 'none', color: 'var(--text-faint)', marginTop: 10,
+            cursor: 'pointer', fontSize: 12
+          }}>Forgot password?</button>
+        )}
+        {mode === 'forgot' && (
+          <button onClick={() => switchMode('login')} style={{
+            background: 'none', border: 'none', color: 'var(--text-faint)', marginTop: 10,
+            cursor: 'pointer', fontSize: 12
+          }}>← Back to log in</button>
+        )}
+
+        <div>
+          <button onClick={() => onLogin(null)} style={{
+            background: 'none', border: 'none', color: 'var(--text-faint)', marginTop: 8,
+            cursor: 'pointer', fontSize: 12
+          }}>Browse without an account →</button>
+        </div>
       </div>
     </div>
   )

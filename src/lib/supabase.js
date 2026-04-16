@@ -54,6 +54,15 @@ export async function signOut() {
   await supabase.auth.signOut()
 }
 
+export async function resetPassword(email) {
+  if (!supabase) return { error: 'Supabase not configured' }
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: SITE_URL,
+  })
+  if (error) return { error: error.message }
+  return { ok: true }
+}
+
 export async function getSession() {
   if (!supabase) return null
   const { data } = await supabase.auth.getSession()
