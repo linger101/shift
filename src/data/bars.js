@@ -79,7 +79,7 @@ export const BARS = [
   // ─── New bars ───
   {id:77,name:"Hong Kong",hood:"Faneuil Hall",area:"Boston",type:"Lounge",vibe:["Karaoke","Dancing","Big Crowds","Late Night"],music:false,karaoke:true,rating:3.9,revCt:1842,lat:42.3604,lng:-71.0560,price:2,desc:"Three-floor Faneuil Hall legend. Scorpion bowls downstairs, karaoke madness upstairs. A Boston rite of passage."},
   {id:78,name:"Scholars",hood:"Downtown",area:"Boston",type:"Pub",vibe:["Karaoke","Dancing","Late Night","Big Crowds"],music:false,karaoke:true,rating:4.1,revCt:924,lat:42.3555,lng:-71.0603,price:2,desc:"Multi-level bar with one of Boston's best karaoke rooms. Private rooms available for groups."},
-  {id:79,name:"Loretta's Last Call",hood:"Fenway",area:"Boston",type:"Lounge",vibe:["Dancing","Country","Live Music","Karaoke"],music:true,karaoke:true,rating:4.3,revCt:1356,lat:42.3468,lng:-71.0970,price:2,desc:"Nashville meets Lansdowne. Country music, line dancing, karaoke nights, and mechanical bull rides."},
+  {id:79,name:"Loretta's Last Call",hood:"Fenway",area:"Boston",type:"Lounge",vibe:["Dancing","Country","Live Music","Karaoke"],music:true,karaoke:true,rating:4.3,revCt:1356,lat:42.3472,lng:-71.0945,price:2,desc:"Nashville meets Lansdowne. Country music, line dancing, karaoke nights, and mechanical bull rides."},
   {id:80,name:"Courtside",hood:"Faneuil Hall",area:"Boston",type:"Sports Bar",vibe:["Karaoke","Sports","Big Crowds","Dancing"],music:false,karaoke:true,rating:4.0,revCt:1127,lat:42.3601,lng:-71.0552,price:2,desc:"Faneuil Hall sports bar with legendary Thursday karaoke nights. Three floors of mayhem."},
   {id:81,name:"Do Re Mi",hood:"Allston",area:"Allston/Brighton",type:"Activity Bar",vibe:["Karaoke","Groups","Late Night"],music:false,karaoke:true,rating:4.4,revCt:387,lat:42.3527,lng:-71.1319,price:2,desc:"Private karaoke rooms with thousands of songs in English, Korean, and Japanese. BYOB-friendly snacks."},
   {id:83,name:"Yvonne's",hood:"Downtown",area:"Boston",type:"Cocktail Bar",vibe:["Upscale","Date Night","Trendy","Late Night"],music:false,karaoke:false,rating:4.4,revCt:2876,lat:42.3548,lng:-71.0622,price:3,desc:"Glamorous supper club in the old Locke-Ober space. Stunning decor, creative cocktails, and scene-y vibes."},
@@ -110,7 +110,7 @@ export const BARS = [
   // ─── Downtown / Faneuil additions ───
   {id:106,name:"Mr. Dooley's",hood:"Financial District",area:"Boston",type:"Irish Pub",vibe:["Live Music","Chill","Big Crowds"],music:true,karaoke:false,rating:4.3,revCt:1456,lat:42.3567,lng:-71.0540,price:2,desc:"Traditional Irish pub on Broad Street with live music nightly, solid pub grub, and a Financial District after-work crowd."},
   {id:107,name:"Black Rose",hood:"Faneuil Hall",area:"Boston",type:"Irish Pub",vibe:["Live Music","Big Crowds","Iconic"],music:true,karaoke:false,rating:4.2,revCt:4230,lat:42.3594,lng:-71.0558,price:2,desc:"Boston's most famous Irish pub since 1976. Live music every night, hearty food, and a Faneuil Hall institution."},
-  {id:108,name:"McGonagles",hood:"Downtown",area:"Boston",type:"Pub",vibe:["Late Night","Young Crowd","Dancing"],music:false,karaoke:false,rating:4.0,revCt:632,lat:42.3590,lng:-71.0565,price:2,desc:"Multi-level nightlife spot with DJs, dancing, and a prime downtown location near Faneuil Hall."},
+  {id:108,name:"McGonagle's",hood:"Dorchester",area:"Dorchester",type:"Irish Pub",vibe:["Chill","Live Music","Date Night"],music:true,karaoke:false,rating:4.5,revCt:632,lat:42.2870,lng:-71.0456,price:2,desc:"Sibling pub to The Dubliner, opened 2024 on Neponset Ave. Live music, elevated Irish fare, and one of the best new restaurants in the country."},
 
   // ─── TD Garden area ───
   {id:109,name:"Greatest Bar",hood:"West End",area:"Boston",type:"Lounge",vibe:["Big Crowds","Dancing","Sports","Late Night"],music:false,karaoke:false,rating:3.9,revCt:2187,lat:42.3648,lng:-71.0612,price:2,desc:"Massive multi-floor venue near TD Garden. DJs, dancing, rooftop deck, and pre-game chaos on game nights."},
@@ -128,7 +128,7 @@ export const BARS = [
 
   // ─── South End / Back Bay additions ───
   {id:119,name:"Clery's",hood:"Back Bay",area:"Boston",type:"Pub",vibe:["Big Crowds","Late Night","Young Crowd","Dancing"],music:false,karaoke:false,rating:4.0,revCt:1634,lat:42.3475,lng:-71.0765,price:2,desc:"Multi-level Copley hangout with a rooftop bar, dancing, and a post-college crowd that packs it on weekends."},
-  {id:128,name:"Corner Tavern",hood:"Back Bay",area:"Boston",type:"Pub",vibe:["Sports","Young Crowd","Late Night"],music:false,karaoke:false,rating:4.1,revCt:567,lat:42.3498,lng:-71.0800,price:2,desc:"Boylston Street corner spot with a solid tap list, game-day energy, and a reliable Back Bay hangout."},
+  {id:128,name:"Corner Tavern",hood:"Back Bay",area:"Boston",type:"Pub",vibe:["Sports","Young Crowd","Late Night"],music:false,karaoke:false,rating:4.1,revCt:567,lat:42.3501,lng:-71.0893,price:2,desc:"Corner of Mass Ave and Marlborough in Back Bay. Solid tap list, game-day energy, and open until 2 AM daily."},
   {id:129,name:"Back Bay Social",hood:"Back Bay",area:"Boston",type:"Pub",vibe:["Young Crowd","Big Crowds","Brunch","Late Night"],music:false,karaoke:false,rating:4.0,revCt:892,lat:42.3494,lng:-71.0785,price:2,desc:"Sprawling Back Bay venue with multiple bars, weekend brunch, and a scene that goes late on Boylston."},
 
   // ─── Beacon Hill ───
@@ -208,6 +208,24 @@ export const BARS = [
   {id:163,name:"Cisco Brewers Fenway",hood:"Fenway",area:"Boston",type:"Brewery",vibe:["Patio","Big Crowds","Live Music","Sports"],music:true,karaoke:false,rating:4.3,revCt:645,lat:42.3448,lng:-71.0984,price:2,desc:"Nantucket-based Cisco Brewers outpost steps from Fenway Park. Outdoor beer garden, raw bar, and live entertainment. Opens early on game days."},
   {id:164,name:"The Bullpen Kitchen + Tap",hood:"Fenway",area:"Boston",type:"Sports Bar",vibe:["Sports","Big Crowds","Late Night"],music:false,karaoke:false,rating:4.1,revCt:523,lat:42.3461,lng:-71.0988,price:2,desc:"Sports bar directly across from Fenway Park on Jersey Street. The pre-game and post-game hotspot with solid pub food and craft taps."},
   {id:165,name:"The Tall Ship",hood:"East Boston",area:"Boston",type:"Rooftop Bar",vibe:["Views","Patio","Chill","Live Music"],music:true,karaoke:false,rating:4.4,revCt:892,lat:42.3648,lng:-71.0406,price:2,desc:"240-foot vessel turned floating oyster bar at Pier One in East Boston. Skyline views, seafood, live music, and food trucks. Seasonal, May through October."},
+
+  // ─── Murphy's Law (re-added at verified address) ───
+  {id:166,name:"Murphy's Law",hood:"South Boston",area:"Boston",type:"Dive Bar",vibe:["Cheap Drinks","Darts","Late Night","Games"],music:false,karaoke:false,rating:4.2,revCt:487,lat:42.3389,lng:-71.0356,price:1,desc:"Classic Southie dive at Summer and L Street. Darts, arcade games, cheap drinks. Featured on Anthony Bourdain's No Reservations."},
+
+  // ─── Fenway / Kenmore additions ───
+  {id:167,name:"Loco Taqueria Fenway",hood:"Fenway",area:"Boston",type:"Pub",vibe:["Big Crowds","Young Crowd","Late Night","Sports"],music:false,karaoke:false,rating:4.3,revCt:845,lat:42.3471,lng:-71.0988,price:2,desc:"Fenway outpost of the popular Southie taco joint. Two bars, 200+ seats, tacos, oysters, and margaritas steps from Fenway Park."},
+  {id:168,name:"Cheeky Monkey Brewing Co.",hood:"Fenway",area:"Boston",type:"Activity Bar",vibe:["Games","Karaoke","Big Crowds","Late Night"],music:false,karaoke:true,rating:4.1,revCt:523,lat:42.3472,lng:-71.0946,price:2,desc:"Bowling, billiards, darts, ping pong, and karaoke right behind Fenway Park. Craft beer brewed on-site."},
+  {id:169,name:"Cornwall's",hood:"Kenmore",area:"Boston",type:"Pub",vibe:["Sports","Chill","Soccer"],music:false,karaoke:false,rating:4.2,revCt:1156,lat:42.3493,lng:-71.0954,price:2,desc:"British pub serving Kenmore Square since 1973. The soccer bar of Boston. Fish and chips, full English, and pints of cask ale."},
+  {id:170,name:"The Kenmore",hood:"Kenmore",area:"Boston",type:"Pub",vibe:["Sports","Young Crowd","Chill"],music:false,karaoke:false,rating:4.0,revCt:387,lat:42.3488,lng:-71.0943,price:2,desc:"Kenmore Square hot spot right by the T station. Burgers, hot dogs, craft beer, and a prime people-watching patio."},
+  {id:171,name:"Mighty Squirrel Taproom",hood:"Fenway",area:"Boston",type:"Brewery",vibe:["Craft Beer","Big Crowds","Patio"],music:false,karaoke:false,rating:4.4,revCt:645,lat:42.3473,lng:-71.1014,price:2,desc:"Two-story, 13,000 sq ft taproom on David Ortiz Drive. Craft beer, hard seltzers, and a full kitchen. Opened 2024."},
+  {id:172,name:"Citizen Public House",hood:"Fenway",area:"Boston",type:"Pub",vibe:["Whiskey","Date Night","Chill"],music:false,karaoke:false,rating:4.4,revCt:1234,lat:42.3444,lng:-71.0981,price:2,desc:"Whiskey-focused gastropub on Boylston. Over 150 whiskeys, an oyster bar, and elevated pub fare in a warm, candlelit room."},
+  {id:173,name:"Fool's Errand",hood:"Fenway",area:"Boston",type:"Cocktail Bar",vibe:["Trendy","Date Night","Intimate"],music:false,karaoke:false,rating:4.5,revCt:312,lat:42.3440,lng:-71.1002,price:3,desc:"Chef Tiffani Faison's standing-room cocktail bar. Build your own cocktails, indulgent snacks, and a fun, no-reservations vibe."},
+  {id:174,name:"Yard House",hood:"Fenway",area:"Boston",type:"Sports Bar",vibe:["Craft Beer","Big Crowds","Sports"],music:false,karaoke:false,rating:4.1,revCt:1567,lat:42.3456,lng:-71.1001,price:2,desc:"Over 100 draft beers on tap on Brookline Ave. Massive space, great pre-game spot, and a menu that goes way beyond bar food."},
+  {id:175,name:"Eastern Standard",hood:"Kenmore",area:"Boston",type:"Cocktail Bar",vibe:["Iconic","Date Night","Upscale"],music:false,karaoke:false,rating:4.5,revCt:2876,lat:42.3473,lng:-71.1014,price:3,desc:"Iconic Boston cocktail bar, reopened 2023 at a new Kenmore location. Classic American fare, legendary bartenders, and old-school sophistication."},
+  {id:176,name:"Audubon",hood:"Kenmore",area:"Boston",type:"Pub",vibe:["Chill","Patio","Craft Beer"],music:false,karaoke:false,rating:4.3,revCt:534,lat:42.3473,lng:-71.1032,price:2,desc:"Neighborhood gastropub just outside Kenmore Square. Bamboo-lined patio, creative comfort food, and a quieter pre-game option."},
+  {id:177,name:"Nathalie Wine Bar",hood:"Fenway",area:"Boston",type:"Wine Bar",vibe:["Date Night","Intimate","Chill"],music:false,karaoke:false,rating:4.5,revCt:267,lat:42.3441,lng:-71.1017,price:2,desc:"Tiny natural wine bar in the Fenway. Sister to Haley.Henry downtown. No TVs, just good wine, small plates, and conversation."},
+  {id:178,name:"SOJUba",hood:"Fenway",area:"Boston",type:"Lounge",vibe:["Trendy","Late Night","Groups"],music:false,karaoke:false,rating:4.2,revCt:412,lat:42.3451,lng:-71.0962,price:2,desc:"Korean restaurant and bar on Boylston. Authentic Korean dishes, soju cocktails, and a vibrant late-night scene until 2 AM."},
+  {id:179,name:"Trillium Fenway",hood:"Fenway",area:"Boston",type:"Brewery",vibe:["Craft Beer","Patio","Chill"],music:false,karaoke:false,rating:4.5,revCt:1876,lat:42.3445,lng:-71.1038,price:2,desc:"Trillium's Fenway taproom and beer garden on Park Drive. Indoor and outdoor seating, full kitchen, and some of Boston's best IPAs."},
 ]
 
 export const ALL_TYPES = [...new Set(BARS.map(b => b.type))].sort()
@@ -260,4 +278,12 @@ export const BAR_WEBSITES = {
   163: 'https://www.ciscobrewersfenway.com',
   164: 'https://www.thebullpenboston.com',
   165: 'https://www.tallshipboston.com',
+  167: 'https://www.locotacoshops.com',
+  169: 'https://www.cornwalls.com',
+  171: 'https://www.mightysquirrel.com',
+  172: 'https://www.citizenpub.com',
+  173: 'https://www.foolserrandboston.com',
+  175: 'https://www.easternstandardboston.com',
+  178: 'https://www.sojubaboston.com',
+  179: 'https://www.trilliumbrewing.com/pages/fenway',
 }
