@@ -31,7 +31,9 @@ function FlyTo({ center }) {
   return null
 }
 
-function BarCard({ bar, onOpen, onClose }) {
+function BarCard({ bar, user, onOpen, onClose, onFav }) {
+  const isFav = user?.favorites?.includes(bar.id)
+
   return (
     <div style={{
       position: 'fixed', bottom: 16, left: 16, right: 16, maxWidth: 440, margin: '0 auto',
@@ -39,14 +41,23 @@ function BarCard({ bar, onOpen, onClose }) {
       boxShadow: '0 4px 24px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08)',
       border: '1px solid rgba(0,0,0,0.06)',
     }}>
-      <button onClick={onClose} style={{
-        position: 'absolute', top: 14, right: 14, background: 'rgba(0,0,0,0.04)',
-        border: 'none', color: '#999', cursor: 'pointer', fontSize: 13,
-        width: 28, height: 28, borderRadius: '50%', display: 'flex',
-        alignItems: 'center', justifyContent: 'center',
-      }}>✕</button>
+      <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 6 }}>
+        {user && (
+          <button onClick={() => onFav(bar.id)} style={{
+            background: 'rgba(0,0,0,0.04)', border: 'none', cursor: 'pointer',
+            width: 28, height: 28, borderRadius: '50%', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', fontSize: 14,
+            color: isFav ? '#C8A96E' : '#ccc', transition: 'color 0.2s',
+          }}>{isFav ? '★' : '☆'}</button>
+        )}
+        <button onClick={onClose} style={{
+          background: 'rgba(0,0,0,0.04)', border: 'none', color: '#999', cursor: 'pointer',
+          fontSize: 13, width: 28, height: 28, borderRadius: '50%', display: 'flex',
+          alignItems: 'center', justifyContent: 'center',
+        }}>✕</button>
+      </div>
 
-      <div style={{ marginBottom: 4 }}>
+      <div style={{ marginBottom: 4, paddingRight: 70 }}>
         <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#1C1710', fontFamily: 'var(--font-display)', letterSpacing: '-0.2px' }}>{bar.name}</h3>
         <p style={{ margin: '3px 0 0', fontSize: 11, color: '#9A8E80', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1.5px' }}>{bar.hood} · {bar.area}</p>
       </div>
@@ -76,7 +87,7 @@ function BarCard({ bar, onOpen, onClose }) {
   )
 }
 
-export default function BarMap({ bars, user, onOpen }) {
+export default function BarMap({ bars, user, onOpen, onFav }) {
   const [selected, setSelected] = useState(null)
   const flyCenter = selected ? [selected.lat, selected.lng] : null
 
@@ -102,7 +113,10 @@ export default function BarMap({ bars, user, onOpen }) {
               key={bar.id}
               position={[bar.lat, bar.lng]}
               icon={createIcon(bar, isFav, isSel)}
-              eventHandlers={{ click: () => setSelected(bar) }}
+              eventHandlers={{
+                mouseover: () => setSelected(bar),
+                click: () => setSelected(bar),
+              }}
             />
           )
         })}
@@ -123,6 +137,8 @@ export default function BarMap({ bars, user, onOpen }) {
       {selected && (
         <BarCard
           bar={selected}
+          user={user}
+          onFav={onFav}
           onOpen={(bar) => { onOpen(bar); setSelected(null) }}
           onClose={() => setSelected(null)}
         />

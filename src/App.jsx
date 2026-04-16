@@ -97,9 +97,19 @@ function Detail({ bar, user, reviews, onClose, onFav, onReview }) {
 
   const m = { bg: '#1C1710', card: '#251F17', bd: '#3D3425', tx: '#E8DCC8', txD: '#B8A88E', txF: '#7A6E5E' }
 
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${bar.lat},${bar.lng}`
+  const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(bar.name + ' ' + bar.hood + ' Boston')}`
+
+  const linkStyle = {
+    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+    padding: '10px 0', background: m.card, border: `1px solid ${m.bd}`, borderRadius: 6,
+    color: m.txD, textDecoration: 'none', fontSize: 12, fontWeight: 600,
+    fontFamily: 'var(--font-display)', letterSpacing: '0.3px', cursor: 'pointer',
+  }
+
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', paddingTop: 30, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)' }} onClick={onClose}>
-      <div onClick={e => e.stopPropagation()} style={{ background: m.bg, borderRadius: 6, width: '100%', maxWidth: 520, maxHeight: '88vh', overflow: 'auto', border: `1px solid ${m.bd}`, padding: 28, boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', paddingTop: 30, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)' }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{ background: m.bg, borderRadius: 10, width: '100%', maxWidth: 520, maxHeight: '88vh', overflow: 'auto', border: `1px solid ${m.bd}`, padding: 28, boxShadow: '0 20px 60px rgba(0,0,0,0.5)', margin: '0 16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
           <div>
             <h2 style={{ margin: 0, fontSize: 26, fontWeight: 700, color: m.tx, fontFamily: 'var(--font-display)' }}>{bar.name}</h2>
@@ -107,45 +117,62 @@ function Detail({ bar, user, reviews, onClose, onFav, onReview }) {
           </div>
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
             {user && <button onClick={() => onFav(bar.id)} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer', color: isFav ? '#C8A96E' : '#4A3D2E' }}>{isFav ? '★' : '☆'}</button>}
-            <button onClick={onClose} style={{ background: m.card, border: `1px solid ${m.bd}`, width: 30, height: 30, borderRadius: 4, color: m.txD, cursor: 'pointer', fontSize: 14 }}>✕</button>
+            <button onClick={onClose} style={{ background: m.card, border: `1px solid ${m.bd}`, width: 30, height: 30, borderRadius: 6, color: m.txD, cursor: 'pointer', fontSize: 14 }}>✕</button>
           </div>
         </div>
+
         <p style={{ color: m.txD, lineHeight: 1.65, fontSize: 14, margin: '0 0 16px' }}>{bar.desc}</p>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
-          <span style={{ background: 'rgba(74,103,65,0.3)', color: '#6B9B5E', padding: '4px 10px', borderRadius: 3, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid #3A5233' }}>{bar.type}</span>
-          <span style={{ background: 'rgba(200,169,110,0.15)', color: '#C8A96E', padding: '4px 10px', borderRadius: 3, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', border: '1px solid rgba(200,169,110,0.25)' }}>{PRICE_LABELS[bar.price]}</span>
-          {bar.music && <span style={{ background: 'rgba(160,82,45,0.2)', color: '#C0623A', padding: '4px 10px', borderRadius: 3, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(160,82,45,0.3)' }}>♪ Live Music</span>}
-          {bar.karaoke && <span style={{ background: 'rgba(139,118,71,0.15)', color: '#C8A96E', padding: '4px 10px', borderRadius: 3, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(139,118,71,0.25)' }}>🎤 Karaoke</span>}
-          {bar.vibe.map(v => <span key={v} style={{ background: 'rgba(200,169,110,0.08)', color: m.txF, padding: '4px 10px', borderRadius: 3, fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>{v}</span>)}
+          <span style={{ background: 'rgba(74,103,65,0.3)', color: '#6B9B5E', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>{bar.type}</span>
+          <span style={{ background: 'rgba(200,169,110,0.15)', color: '#C8A96E', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)' }}>{PRICE_LABELS[bar.price]}</span>
+          {bar.music && <span style={{ background: 'rgba(160,82,45,0.2)', color: '#C0623A', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>♪ Live Music</span>}
+          {bar.karaoke && <span style={{ background: 'rgba(139,118,71,0.15)', color: '#C8A96E', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>🎤 Karaoke</span>}
+          {bar.vibe.map(v => <span key={v} style={{ background: 'rgba(200,169,110,0.08)', color: m.txF, padding: '4px 10px', borderRadius: 20, fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>{v}</span>)}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20, padding: '12px 16px', background: m.card, borderRadius: 4, border: `1px solid ${m.bd}` }}>
+        {/* Rating */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, padding: '12px 16px', background: m.card, borderRadius: 8, border: `1px solid ${m.bd}` }}>
           <Stars r={Math.round(bar.rating)} sz={18} />
           <span style={{ fontSize: 15, color: m.tx, fontWeight: 700, fontFamily: 'var(--font-display)' }}>{bar.rating}</span>
           <span style={{ fontSize: 12, color: m.txF }}>({bar.revCt.toLocaleString()} Google reviews)</span>
         </div>
 
+        {/* Action links */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+          <a href={searchUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+            <span style={{ fontSize: 14 }}>🌐</span> Website
+          </a>
+          <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+            <span style={{ fontSize: 14 }}>📍</span> Directions
+          </a>
+          <a href={`https://www.google.com/maps/search/${encodeURIComponent(bar.name + ' Boston')}/@${bar.lat},${bar.lng},17z`} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+            <span style={{ fontSize: 14 }}>⭐</span> Google Reviews
+          </a>
+        </div>
+
+        {/* Leave a Review */}
         {user && (
-          <div style={{ marginBottom: 20, padding: 16, background: m.card, borderRadius: 4, border: `1px solid ${m.bd}` }}>
+          <div style={{ marginBottom: 20, padding: 16, background: m.card, borderRadius: 8, border: `1px solid ${m.bd}` }}>
             <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 700, color: '#C8A96E', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Leave a Review</p>
             <Stars r={rt} onRate={setRt} sz={22} />
             <textarea value={txt} onChange={e => setTxt(e.target.value)} placeholder="What did you think?"
-              style={{ width: '100%', marginTop: 8, padding: 10, background: 'rgba(200,169,110,0.08)', border: `1px solid ${m.bd}`, borderRadius: 4, color: m.tx, fontSize: 13, resize: 'vertical', minHeight: 60, fontFamily: 'var(--font-body)', boxSizing: 'border-box' }} />
+              style={{ width: '100%', marginTop: 8, padding: 10, background: 'rgba(200,169,110,0.08)', border: `1px solid ${m.bd}`, borderRadius: 6, color: m.tx, fontSize: 13, resize: 'vertical', minHeight: 60, fontFamily: 'var(--font-body)', boxSizing: 'border-box' }} />
             <button onClick={submit} disabled={!rt || !txt.trim()} style={{
               marginTop: 8, padding: '8px 24px', background: rt && txt.trim() ? '#4A6741' : '#333',
-              color: rt && txt.trim() ? '#E8DCC8' : '#666', border: 'none', borderRadius: 4, fontWeight: 700,
+              color: rt && txt.trim() ? '#E8DCC8' : '#666', border: 'none', borderRadius: 6, fontWeight: 700,
               cursor: rt && txt.trim() ? 'pointer' : 'default', fontSize: 12,
               fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px'
             }}>Post Review</button>
           </div>
         )}
 
+        {/* Friend Reviews */}
         {bRevs.length > 0 && (
           <div>
             <p style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 700, color: '#C8A96E', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Friend Reviews ({bRevs.length})</p>
             {bRevs.map((r, i) => (
-              <div key={i} style={{ padding: 12, marginBottom: 6, background: 'rgba(200,169,110,0.06)', borderRadius: 4, borderLeft: '2px solid #8B7647' }}>
+              <div key={i} style={{ padding: 12, marginBottom: 6, background: 'rgba(200,169,110,0.06)', borderRadius: 6, borderLeft: '2px solid #8B7647' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                   <span style={{ fontSize: 12, fontWeight: 700, color: '#C8A96E', fontFamily: 'var(--font-display)' }}>@{r.username}</span>
                   <Stars r={r.rating} sz={12} />
@@ -631,7 +658,7 @@ export default function App() {
         ) : view === 'map' ? (
           <div style={{ height: 'calc(100vh - 160px)', padding: '8px 16px 16px' }}>
             <div style={{ height: '100%', borderRadius: 8, overflow: 'hidden', border: '1px solid var(--bd)' }}>
-              <BarMap bars={filtered} user={userData} onOpen={setDetail} />
+              <BarMap bars={filtered} user={userData} onOpen={setDetail} onFav={toggleFav} />
             </div>
           </div>
         ) : (
