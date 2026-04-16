@@ -84,3 +84,8 @@ create policy "Authenticated users can send friend requests"
 
 create policy "Addressee can update friendship status"
   on public.friendships for update using (auth.uid() = addressee_id);
+
+create policy "Either party can delete a friendship"
+  on public.friendships for delete using (
+    auth.uid() = requester_id or auth.uid() = addressee_id
+  );

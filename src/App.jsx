@@ -409,28 +409,35 @@ export default function App() {
     setFriendResults(await db.searchUsers(friendSearch))
   }
 
+  const refreshFriends = async (userId) => {
+    const { accepted, incoming, outgoing } = await db.getFriendships(userId || user?.id)
+    setFriends(accepted)
+    setFriendRequests(incoming)
+    setOutgoingRequests(outgoing)
+  }
+
   const addFriend = async (addresseeId) => {
     if (!profile) return
-    await db.sendFriendRequest(profile.id, addresseeId)
-    setOutgoingRequests(prev => [...prev, addresseeId])
+    const result = await db.sendFriendRequest(profile.id, addresseeId)
+    if (!result) { alert('Could not send friend request. You may have already sent one to this user.'); return }
+    await refreshFriends(profile.id)
     setFriendResults([])
     setFriendSearch('')
   }
 
   const acceptFriend = async (req) => {
     await db.updateFriendship(req.id, 'accepted')
-    setFriendRequests(prev => prev.filter(r => r.id !== req.id))
-    setFriends(prev => [...prev, { ...req.requester, friendshipId: req.id }])
+    await refreshFriends()
   }
 
   const declineFriend = async (req) => {
     await db.updateFriendship(req.id, 'declined')
-    setFriendRequests(prev => prev.filter(r => r.id !== req.id))
+    await refreshFriends()
   }
 
   const removeFriend = async (friend) => {
     await db.removeFriend(friend.friendshipId)
-    setFriends(prev => prev.filter(f => f.id !== friend.id))
+    await refreshFriends()
     if (viewingFriend?.id === friend.id) { setViewingFriend(null); setFriendProfileData(null) }
   }
 
@@ -714,7 +721,7 @@ export default function App() {
                         <div style={{ marginTop: 10 }}>
                           {friendResults.filter(u => u.id !== profile?.id).map(u => {
                             const isFriend = friends.some(f => f.id === u.id)
-                            const isPending = outgoingRequests.includes(u.id)
+                            const isPending = outgoingRequests.some(o => o.id === u.id)
                             return (
                               <div key={u.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid var(--bd)' }}>
                                 <span style={{ fontSize: 13, color: 'var(--text)', fontFamily: 'var(--font-display)' }}>@{u.username}</span>
@@ -769,10 +776,13 @@ export default function App() {
                     {outgoingRequests.length > 0 && (
                       <>
                         <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '20px 0 10px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Sent ({outgoingRequests.length})</p>
-                        {outgoingRequests.map(id => (
-                          <div key={id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', marginBottom: 8, background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--bd)' }}>
-                            <p style={{ margin: 0, fontSize: 14, fontWeight: 600, fontFamily: 'var(--font-display)', color: 'var(--text-dim)' }}>Request sent</p>
-                            <span style={{ fontSize: 11, color: 'var(--text-faint)', fontFamily: 'var(--font-display)', fontWeight: 700 }}>Pending</span>
+                        {outgoingRequests.map(req => (
+                          <div key={req.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', marginBottom: 8, background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--bd)' }}>
+                            <div>
+                              <p style={{ margin: 0, fontSize: 14, fontWeight: 600, fontFamily: 'var(--font-display)', color: 'var(--text)' }}>@{req.username}</p>
+                              <p style={{ margin: '2px 0 0', fontSize: 11, color: 'var(--text-faint)' }}>Pending</p>
+                            </div>
+                            <button onClick={() => removeFriend(req)} style={{ padding: '6px 12px', background: 'none', border: '1px solid var(--bd)', borderRadius: 6, color: 'var(--text-dim)', fontWeight: 700, cursor: 'pointer', fontSize: 11, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Cancel</button>
                           </div>
                         ))}
                       </>

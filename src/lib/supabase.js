@@ -135,7 +135,7 @@ export async function getFriendships(userId) {
 
   const outgoing = data
     .filter(f => f.status === 'pending' && f.requester_id === userId)
-    .map(f => f.addressee_id)
+    .map(f => ({ ...f.addressee, friendshipId: f.id }))
 
   return { accepted, incoming, outgoing }
 }
