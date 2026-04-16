@@ -63,6 +63,7 @@ function BarCard({ bar, user, reviews, onFav, onOpen }) {
         <span style={{ background: 'rgba(74,103,65,0.12)', color: 'var(--green)', padding: '3px 8px', borderRadius: 3, fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(74,103,65,0.2)' }}>{bar.type}</span>
         <span style={{ background: 'rgba(200,169,110,0.1)', color: 'var(--gold-dim)', padding: '3px 8px', borderRadius: 3, fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-display)', border: '1px solid rgba(200,169,110,0.15)' }}>{PRICE_LABELS[bar.price]}</span>
         {bar.music && <span style={{ background: 'rgba(160,82,45,0.1)', color: 'var(--red-bright)', padding: '3px 8px', borderRadius: 3, fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(160,82,45,0.15)' }}>♪ Live</span>}
+        {bar.karaoke && <span style={{ background: 'rgba(139,118,71,0.1)', color: 'var(--gold-dim)', padding: '3px 8px', borderRadius: 3, fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(139,118,71,0.2)' }}>🎤 Karaoke</span>}
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3, marginBottom: 10 }}>
         {bar.vibe.slice(0, 4).map(v => (
@@ -115,6 +116,7 @@ function Detail({ bar, user, reviews, onClose, onFav, onReview }) {
           <span style={{ background: 'rgba(74,103,65,0.3)', color: '#6B9B5E', padding: '4px 10px', borderRadius: 3, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid #3A5233' }}>{bar.type}</span>
           <span style={{ background: 'rgba(200,169,110,0.15)', color: '#C8A96E', padding: '4px 10px', borderRadius: 3, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', border: '1px solid rgba(200,169,110,0.25)' }}>{PRICE_LABELS[bar.price]}</span>
           {bar.music && <span style={{ background: 'rgba(160,82,45,0.2)', color: '#C0623A', padding: '4px 10px', borderRadius: 3, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(160,82,45,0.3)' }}>♪ Live Music</span>}
+          {bar.karaoke && <span style={{ background: 'rgba(139,118,71,0.15)', color: '#C8A96E', padding: '4px 10px', borderRadius: 3, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(139,118,71,0.25)' }}>🎤 Karaoke</span>}
           {bar.vibe.map(v => <span key={v} style={{ background: 'rgba(200,169,110,0.08)', color: m.txF, padding: '4px 10px', borderRadius: 3, fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>{v}</span>)}
         </div>
 
@@ -250,6 +252,7 @@ export default function App() {
   const [selAreas, setSelAreas] = useState([])
   const [minRat, setMinRat] = useState(0)
   const [musicOnly, setMusicOnly] = useState(false)
+  const [karaokeOnly, setKaraokeOnly] = useState(false)
   const [favOnly, setFavOnly] = useState(false)
   const [sortBy, setSortBy] = useState('rating')
 
@@ -259,6 +262,7 @@ export default function App() {
   const [draftAreas, setDraftAreas] = useState([])
   const [draftMinRat, setDraftMinRat] = useState(0)
   const [draftMusicOnly, setDraftMusicOnly] = useState(false)
+  const [draftKaraokeOnly, setDraftKaraokeOnly] = useState(false)
   const [draftSortBy, setDraftSortBy] = useState('rating')
 
   const [detail, setDetail] = useState(null)
@@ -331,6 +335,7 @@ export default function App() {
     setDraftAreas(selAreas)
     setDraftMinRat(minRat)
     setDraftMusicOnly(musicOnly)
+    setDraftKaraokeOnly(karaokeOnly)
     setDraftSortBy(sortBy)
     setShowFilters(true)
   }
@@ -341,13 +346,14 @@ export default function App() {
     setSelAreas(draftAreas)
     setMinRat(draftMinRat)
     setMusicOnly(draftMusicOnly)
+    setKaraokeOnly(draftKaraokeOnly)
     setSortBy(draftSortBy)
     setShowFilters(false)
   }
 
   const clearDraftFilters = () => {
     setDraftTypes([]); setDraftVibes([]); setDraftAreas([])
-    setDraftMinRat(0); setDraftMusicOnly(false); setDraftSortBy('rating')
+    setDraftMinRat(0); setDraftMusicOnly(false); setDraftKaraokeOnly(false); setDraftSortBy('rating')
   }
 
   const searchFriends = async () => {
@@ -388,6 +394,7 @@ export default function App() {
     if (selAreas.length && !selAreas.includes(b.area)) return false
     if (minRat && b.rating < minRat) return false
     if (musicOnly && !b.music) return false
+    if (karaokeOnly && !b.karaoke) return false
     if (favOnly && userData && !userData.favorites?.includes(b.id)) return false
     return true
   })
@@ -397,8 +404,8 @@ export default function App() {
   else if (sortBy === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name))
   else if (sortBy === 'price') filtered.sort((a, b) => a.price - b.price)
 
-  const afc = selTypes.length + selVibes.length + selAreas.length + (minRat ? 1 : 0) + (musicOnly ? 1 : 0) + (favOnly ? 1 : 0)
-  const draftAfc = draftTypes.length + draftVibes.length + draftAreas.length + (draftMinRat ? 1 : 0) + (draftMusicOnly ? 1 : 0)
+  const afc = selTypes.length + selVibes.length + selAreas.length + (minRat ? 1 : 0) + (musicOnly ? 1 : 0) + (karaokeOnly ? 1 : 0) + (favOnly ? 1 : 0)
+  const draftAfc = draftTypes.length + draftVibes.length + draftAreas.length + (draftMinRat ? 1 : 0) + (draftMusicOnly ? 1 : 0) + (draftKaraokeOnly ? 1 : 0)
 
   const friendIds = new Set(friends.map(f => f.id))
   const friendReviews = reviews.filter(r => friendIds.has(r.user_id)).slice(0, 20)
@@ -478,7 +485,21 @@ export default function App() {
         {/* Filters Panel */}
         {showFilters && tab !== 'activity' && (
           <div style={{ maxWidth: 680, margin: '0 auto', padding: '0 16px 12px', borderTop: '1px solid var(--bd)' }}>
-            <div style={{ margin: '10px 0 6px' }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 10, marginBottom: 10, alignItems: 'center' }}>
+              <button onClick={applyFilters} style={{
+                padding: '9px 28px', background: 'var(--green)', border: 'none', borderRadius: 4,
+                color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 11,
+                fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px'
+              }}>Apply{draftAfc > 0 ? ` (${draftAfc})` : ''}</button>
+              {draftAfc > 0 && (
+                <button onClick={clearDraftFilters} style={{
+                  background: 'none', border: '1px solid rgba(160,82,45,0.3)', padding: '9px 16px', borderRadius: 4,
+                  color: 'var(--red-bright)', cursor: 'pointer', fontSize: 11, fontWeight: 700,
+                  fontFamily: 'var(--font-display)', textTransform: 'uppercase'
+                }}>Clear</button>
+              )}
+            </div>
+            <div style={{ margin: '8px 0' }}>
               <p style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 5px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '2px' }}>Sort By</p>
               <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                 {[{ v: 'rating', l: 'Top Rated' }, { v: 'reviews', l: 'Most Popular' }, { v: 'name', l: 'A–Z' }, { v: 'price', l: 'Price ↑' }].map(s => (
@@ -504,20 +525,7 @@ export default function App() {
             </div>
             <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
               <Chip active={draftMusicOnly} onClick={() => setDraftMusicOnly(!draftMusicOnly)} variant="vibe">♪ Live Music</Chip>
-            </div>
-            <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center' }}>
-              <button onClick={applyFilters} style={{
-                padding: '9px 28px', background: 'var(--green)', border: 'none', borderRadius: 4,
-                color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 11,
-                fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px'
-              }}>Apply{draftAfc > 0 ? ` (${draftAfc})` : ''}</button>
-              {draftAfc > 0 && (
-                <button onClick={clearDraftFilters} style={{
-                  background: 'none', border: '1px solid rgba(160,82,45,0.3)', padding: '9px 16px', borderRadius: 4,
-                  color: 'var(--red-bright)', cursor: 'pointer', fontSize: 11, fontWeight: 700,
-                  fontFamily: 'var(--font-display)', textTransform: 'uppercase'
-                }}>Clear</button>
-              )}
+              <Chip active={draftKaraokeOnly} onClick={() => setDraftKaraokeOnly(!draftKaraokeOnly)} variant="vibe">🎤 Karaoke</Chip>
             </div>
           </div>
         )}
