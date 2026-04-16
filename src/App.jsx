@@ -630,8 +630,7 @@ export default function App() {
           </div>
         ) : view === 'map' ? (
           <div style={{ height: 'calc(100vh - 160px)', padding: '8px 16px 16px' }}>
-            <p style={{ margin: '0 0 8px', fontSize: 12, color: 'var(--text-faint)', fontFamily: 'var(--font-display)' }}>{filtered.length} on map</p>
-            <div style={{ height: 'calc(100% - 24px)', borderRadius: 4, overflow: 'hidden', border: '1px solid var(--bd)' }}>
+            <div style={{ height: '100%', borderRadius: 8, overflow: 'hidden', border: '1px solid var(--bd)' }}>
               <BarMap bars={filtered} user={userData} onOpen={setDetail} />
             </div>
           </div>

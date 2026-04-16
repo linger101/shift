@@ -1,56 +1,76 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { PRICE_LABELS } from '../data/bars'
 
 function createIcon(bar, isFav, isSel) {
-  const cls = isSel ? 'selected' : isFav ? 'favorite' : 'default'
-  const size = isSel ? 32 : 26
-  const label = bar.music ? '♪' : PRICE_LABELS[bar.price]
+  const size = isSel ? 14 : 10
+  const color = isSel ? '#C8A96E' : isFav ? '#C8A96E' : '#4A6741'
+  const ring = isSel ? 3 : isFav ? 2 : 0
+  const shadow = isSel ? '0 0 0 4px rgba(200,169,110,0.25)' : '0 1px 3px rgba(0,0,0,0.3)'
+
   return L.divIcon({
     className: '',
-    html: `<div class="bar-marker ${cls}" style="width:${size}px;height:${size}px;">${label}</div>`,
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
+    html: `<div style="
+      width:${size}px;height:${size}px;
+      background:${color};
+      border-radius:50%;
+      border:${ring ? ring + 'px solid rgba(255,255,255,0.9)' : '2px solid rgba(255,255,255,0.8)'};
+      box-shadow:${shadow};
+      transition:all 0.2s ease;
+      cursor:pointer;
+    "></div>`,
+    iconSize: [size + ring * 2, size + ring * 2],
+    iconAnchor: [(size + ring * 2) / 2, (size + ring * 2) / 2],
   })
 }
 
 function FlyTo({ center }) {
   const map = useMap()
-  if (center) map.flyTo(center, 15, { duration: 0.5 })
+  if (center) map.flyTo(center, 15, { duration: 0.4 })
   return null
 }
 
-function BarPopup({ bar, onOpen, onClose }) {
+function BarCard({ bar, onOpen, onClose }) {
   return (
     <div style={{
-      position: 'fixed', bottom: 12, left: 12, right: 12, zIndex: 9999,
-      background: '#1C1710', borderRadius: 6, padding: 16,
-      border: '1px solid #8B7647', boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-      borderLeft: '3px solid #C8A96E'
+      position: 'fixed', bottom: 16, left: 16, right: 16, maxWidth: 440, margin: '0 auto',
+      zIndex: 9999, background: '#fff', borderRadius: 12, padding: '20px 22px',
+      boxShadow: '0 4px 24px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08)',
+      border: '1px solid rgba(0,0,0,0.06)',
     }}>
       <button onClick={onClose} style={{
-        position: 'absolute', top: 8, right: 10, background: 'none',
-        border: 'none', color: '#7A6E5E', cursor: 'pointer', fontSize: 16
+        position: 'absolute', top: 14, right: 14, background: 'rgba(0,0,0,0.04)',
+        border: 'none', color: '#999', cursor: 'pointer', fontSize: 13,
+        width: 28, height: 28, borderRadius: '50%', display: 'flex',
+        alignItems: 'center', justifyContent: 'center',
       }}>✕</button>
-      <h3 style={{ margin: 0, fontSize: 17, fontFamily: 'var(--font-display)', color: '#E8DCC8', fontWeight: 700 }}>{bar.name}</h3>
-      <p style={{ margin: '2px 0 6px', fontSize: 10, color: '#7A6E5E', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>{bar.hood} · {bar.area}</p>
-      <p style={{ margin: '0 0 10px', fontSize: 12, color: '#B8A88E', lineHeight: 1.5 }}>{bar.desc}</p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 10 }}>
-        <span style={{ background: 'rgba(74,103,65,0.3)', color: '#6B9B5E', padding: '2px 8px', borderRadius: 2, fontSize: 9, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid #3A5233' }}>{bar.type}</span>
-        <span style={{ background: 'rgba(200,169,110,0.15)', color: '#C8A96E', padding: '2px 8px', borderRadius: 2, fontSize: 9, fontWeight: 700, fontFamily: 'var(--font-display)', border: '1px solid rgba(200,169,110,0.25)' }}>{PRICE_LABELS[bar.price]}</span>
-        {bar.music && <span style={{ background: 'rgba(160,82,45,0.2)', color: '#C0623A', padding: '2px 8px', borderRadius: 2, fontSize: 9, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(160,82,45,0.3)' }}>♪ Live</span>}
+
+      <div style={{ marginBottom: 4 }}>
+        <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#1C1710', fontFamily: 'var(--font-display)', letterSpacing: '-0.2px' }}>{bar.name}</h3>
+        <p style={{ margin: '3px 0 0', fontSize: 11, color: '#9A8E80', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1.5px' }}>{bar.hood} · {bar.area}</p>
       </div>
+
+      <p style={{ margin: '10px 0 12px', fontSize: 13, color: '#6B6055', lineHeight: 1.55 }}>{bar.desc}</p>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 14 }}>
+        <span style={{ background: '#F0EDE8', color: '#4A6741', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>{bar.type}</span>
+        <span style={{ background: '#F0EDE8', color: '#8B7647', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-display)' }}>{PRICE_LABELS[bar.price]}</span>
+        {bar.music && <span style={{ background: '#F0EDE8', color: '#C0623A', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>♪ Live</span>}
+        {bar.karaoke && <span style={{ background: '#F0EDE8', color: '#8B7647', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>🎤 Karaoke</span>}
+      </div>
+
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <span style={{ color: '#C8A96E', fontSize: 14 }}>{'★'.repeat(Math.round(bar.rating))}</span>
-          <span style={{ fontSize: 11, color: '#7A6E5E' }}>{bar.rating}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ color: '#C8A96E', fontSize: 13, letterSpacing: 1 }}>{'★'.repeat(Math.round(bar.rating))}<span style={{ color: '#E0DAD0' }}>{'★'.repeat(5 - Math.round(bar.rating))}</span></span>
+          <span style={{ fontSize: 13, color: '#1C1710', fontWeight: 600, fontFamily: 'var(--font-display)' }}>{bar.rating}</span>
+          <span style={{ fontSize: 11, color: '#9A8E80' }}>({bar.revCt.toLocaleString()})</span>
         </div>
         <button onClick={() => onOpen(bar)} style={{
-          padding: '6px 16px', background: '#4A6741', border: 'none', borderRadius: 3,
-          color: '#E8DCC8', fontWeight: 700, cursor: 'pointer', fontSize: 11,
-          fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '0.5px'
-        }}>Full Details →</button>
+          padding: '8px 18px', background: '#1C1710', border: 'none', borderRadius: 8,
+          color: '#fff', fontWeight: 600, cursor: 'pointer', fontSize: 12,
+          fontFamily: 'var(--font-display)', letterSpacing: '0.3px',
+        }}>View Details</button>
       </div>
     </div>
   )
@@ -66,11 +86,12 @@ export default function BarMap({ bars, user, onOpen }) {
         center={[42.355, -71.08]}
         zoom={13}
         style={{ width: '100%', height: '100%', borderRadius: 4 }}
-        zoomControl={true}
+        zoomControl={false}
+        attributionControl={false}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
         />
         {flyCenter && <FlyTo center={flyCenter} />}
         {bars.map(bar => {
@@ -87,30 +108,25 @@ export default function BarMap({ bars, user, onOpen }) {
         })}
       </MapContainer>
 
+      {/* Bar count pill */}
+      <div style={{
+        position: 'absolute', top: 12, left: 12, zIndex: 1000,
+        background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(8px)',
+        borderRadius: 20, padding: '6px 14px',
+        fontSize: 11, color: '#6B6055', fontWeight: 600,
+        fontFamily: 'var(--font-display)', letterSpacing: '0.5px',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+      }}>
+        {bars.length} bars
+      </div>
+
       {selected && (
-        <BarPopup
+        <BarCard
           bar={selected}
           onOpen={(bar) => { onOpen(bar); setSelected(null) }}
           onClose={() => setSelected(null)}
         />
       )}
-
-      {/* Legend */}
-      <div style={{
-        position: 'absolute', top: 10, right: 10, zIndex: 1000,
-        background: 'rgba(255,255,255,0.95)', borderRadius: 4, padding: '8px 12px',
-        border: '1px solid #ddd', fontSize: 10, color: '#666',
-        fontFamily: 'var(--font-display)', boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#4A6741', border: '1.5px solid #fff' }} />
-          <span>Bar</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#C8A96E', border: '1.5px solid #fff' }} />
-          <span>Favorited</span>
-        </div>
-      </div>
     </div>
   )
 }
