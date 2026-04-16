@@ -95,7 +95,7 @@ export const BARS = [
   {id:93,name:"Lamplighter Brewing",hood:"Broadway",area:"Cambridge",type:"Brewery",vibe:["Craft Beer","Patio","Chill","Games"],music:false,karaoke:false,rating:4.5,revCt:1204,lat:42.3712,lng:-71.0970,price:2,desc:"Bright, welcoming taproom with creative beers, board games, and a killer outdoor patio."},
   {id:94,name:"Night Shift Brewing",hood:"Everett",area:"Everett",type:"Brewery",vibe:["Craft Beer","Patio","Big Crowds"],music:false,karaoke:false,rating:4.4,revCt:3567,lat:42.4042,lng:-71.0571,price:2,desc:"Massive taproom and beer garden. Food trucks, lawn games, and some of Boston's best IPAs."},
   {id:95,name:"Trillium Fort Point",hood:"Seaport",area:"Boston",type:"Brewery",vibe:["Craft Beer","Upscale","Patio"],music:false,karaoke:false,rating:4.5,revCt:2890,lat:42.3487,lng:-71.0492,price:2,desc:"Boston's craft beer darling. Flagship taproom with full kitchen and rooftop deck overlooking Fort Point."},
-  {id:96,name:"Ward 8",hood:"North End",area:"Boston",type:"Cocktail Bar",vibe:["Craft Cocktails","Chill","Date Night"],music:false,karaoke:false,rating:4.3,revCt:742,lat:42.3649,lng:-71.0557,price:2,desc:"Named after the classic Boston cocktail. Seasonal menus, great whiskey selection, and a cozy North End vibe."},
+  {id:96,name:"Ward 8",hood:"West End",area:"Boston",type:"Cocktail Bar",vibe:["Craft Cocktails","Chill","Date Night"],music:false,karaoke:false,rating:4.3,revCt:742,lat:42.3655,lng:-71.0603,price:2,desc:"Named after the classic Boston cocktail, born in the old Ward 8 neighborhood. Seasonal menus, great whiskey selection, and a cozy Bulfinch Triangle vibe."},
   {id:97,name:"The Druid",hood:"Inman Square",area:"Cambridge",type:"Irish Pub",vibe:["Chill","Cheap Drinks","Trivia"],music:false,karaoke:false,rating:4.5,revCt:621,lat:42.3737,lng:-71.1003,price:1,desc:"Tiny, authentic Irish pub. Wednesday trivia is legendary. Cash only, perfect Guinness."},
   {id:98,name:"Atwood's Tavern",hood:"Inman Square",area:"Cambridge",type:"Pub",vibe:["Live Music","Chill","Craft Beer"],music:true,karaoke:false,rating:4.5,revCt:438,lat:42.3738,lng:-71.0998,price:2,desc:"Live music 6 nights a week — Americana, folk, rock. Great food and a warm neighborhood feel."},
   {id:99,name:"Remnant Brewing",hood:"Bow Market",area:"Somerville",type:"Brewery",vibe:["Craft Beer","Trendy","Chill"],music:false,karaoke:false,rating:4.4,revCt:672,lat:42.3807,lng:-71.0940,price:2,desc:"Tiny Union Square taproom in Bow Market. Creative lagers, sours, and a communal vibe."},
@@ -121,7 +121,7 @@ export const BARS = [
   {id:114,name:"Tavern in the Square",hood:"West End",area:"Boston",type:"Pub",vibe:["Sports","Big Crowds","Young Crowd","Brunch"],music:false,karaoke:false,rating:4.0,revCt:1290,lat:42.3648,lng:-71.0615,price:2,desc:"Sprawling pub near TD Garden with craft cocktails, TVs everywhere, and a reliable game-day atmosphere."},
 
   // ─── Downtown cocktail / wine ───
-  {id:115,name:"Offsuit",hood:"Downtown",area:"Boston",type:"Cocktail Bar",vibe:["Speakeasy","Date Night","Trendy"],music:false,karaoke:false,rating:4.5,revCt:274,lat:42.3512,lng:-71.0594,price:3,desc:"Card-game-themed cocktail bar tucked inside Troquet on South in the Leather District. Inventive drinks, moody ambiance, and a hidden speakeasy vibe."},
+  {id:115,name:"Offsuit",hood:"Leather District",area:"Boston",type:"Cocktail Bar",vibe:["Speakeasy","Date Night","Trendy"],music:false,karaoke:false,rating:4.5,revCt:274,lat:42.3512,lng:-71.0594,price:3,desc:"Card-game-themed cocktail bar tucked inside Troquet on South in the Leather District. Inventive drinks, moody ambiance, and a hidden speakeasy vibe."},
   {id:116,name:"Haley.Henry",hood:"Downtown Crossing",area:"Boston",type:"Wine Bar",vibe:["Date Night","Intimate","Chill"],music:false,karaoke:false,rating:4.6,revCt:385,lat:42.3558,lng:-71.0612,price:2,desc:"Intimate natural wine bar tucked in Downtown Crossing. Curated pours, small plates, and a calm escape from the city."},
   {id:117,name:"Society on High",hood:"Financial District",area:"Boston",type:"Lounge",vibe:["Upscale","Date Night","Big Crowds","Late Night"],music:false,karaoke:false,rating:4.1,revCt:1087,lat:42.3554,lng:-71.0549,price:3,desc:"Massive multi-level venue in the Financial District. Upscale cocktails, velvet banquettes, and a see-and-be-seen crowd."},
   {id:118,name:"Sip Wine Bar",hood:"Downtown",area:"Boston",type:"Wine Bar",vibe:["Date Night","Chill","Small Plates"],music:false,karaoke:false,rating:4.3,revCt:312,lat:42.3550,lng:-71.0590,price:2,desc:"Cozy downtown wine bar with an approachable list, charcuterie boards, and a relaxed after-work atmosphere."},
@@ -226,6 +226,24 @@ export const BARS = [
   {id:177,name:"Nathalie Wine Bar",hood:"Fenway",area:"Boston",type:"Wine Bar",vibe:["Date Night","Intimate","Chill"],music:false,karaoke:false,rating:4.5,revCt:267,lat:42.3441,lng:-71.1017,price:2,desc:"Tiny natural wine bar in the Fenway. Sister to Haley.Henry downtown. No TVs, just good wine, small plates, and conversation."},
   {id:178,name:"SOJUba",hood:"Fenway",area:"Boston",type:"Lounge",vibe:["Trendy","Late Night","Groups"],music:false,karaoke:false,rating:4.2,revCt:412,lat:42.3451,lng:-71.0962,price:2,desc:"Korean restaurant and bar on Boylston. Authentic Korean dishes, soju cocktails, and a vibrant late-night scene until 2 AM."},
   {id:179,name:"Trillium Fenway",hood:"Fenway",area:"Boston",type:"Brewery",vibe:["Craft Beer","Patio","Chill"],music:false,karaoke:false,rating:4.5,revCt:1876,lat:42.3445,lng:-71.1038,price:2,desc:"Trillium's Fenway taproom and beer garden on Park Drive. Indoor and outdoor seating, full kitchen, and some of Boston's best IPAs."},
+
+  // ─── North End additions ───
+  {id:180,name:"Rocco's Cucina & Bar",hood:"North End",area:"Boston",type:"Cocktail Bar",vibe:["Date Night","Trendy","Italian","Patio"],music:false,karaoke:false,rating:4.4,revCt:312,lat:42.3678,lng:-71.0528,price:3,desc:"Stylish Commercial Street Italian bar with handmade cocktails, a Neapolitan-leaning menu, and harbor-adjacent charm."},
+  {id:181,name:"The Red Fox",hood:"North End",area:"Boston",type:"Pub",vibe:["Chill","Date Night","Craft Beer"],music:false,karaoke:false,rating:4.5,revCt:187,lat:42.3659,lng:-71.0530,price:2,desc:"Cozy Commercial Street pub with a smart cocktail list, rotating taps, and a warm North End waterfront feel."},
+  {id:182,name:"Corner Cafe",hood:"North End",area:"Boston",type:"Dive Bar",vibe:["Cheap Drinks","Cash Only","Chill"],music:false,karaoke:false,rating:4.3,revCt:142,lat:42.3650,lng:-71.0545,price:1,desc:"Tiny Prince Street corner bar that feels like stepping into another era. Cheap drinks, locals only, and zero pretense."},
+  {id:183,name:"Farmacia",hood:"North End",area:"Boston",type:"Cocktail Bar",vibe:["Speakeasy","Date Night","Intimate"],music:false,karaoke:false,rating:4.6,revCt:241,lat:42.3636,lng:-71.0535,price:3,desc:"Apothecary-themed cocktail bar on North Square. Herbal, spirit-forward drinks and a tight, intimate room tucked into one of the North End's oldest corners."},
+  {id:184,name:"Modern Underground",hood:"North End",area:"Boston",type:"Cocktail Bar",vibe:["Speakeasy","Date Night","Late Night"],music:false,karaoke:false,rating:4.5,revCt:198,lat:42.3640,lng:-71.0540,price:3,desc:"Hidden cocktail lounge beneath Modern Pastry on Hanover Street. Dessert-inspired drinks, moody lighting, and a true speakeasy feel."},
+  {id:185,name:"Caffe Paradiso",hood:"North End",area:"Boston",type:"Lounge",vibe:["Late Night","Chill","Iconic"],music:false,karaoke:false,rating:4.2,revCt:876,lat:42.3639,lng:-71.0541,price:2,desc:"Classic Hanover Street cafe and bar open late. Espresso, gelato, and grappa in equal measure — a North End institution since the 80s."},
+  {id:186,name:"Cafe Amaro",hood:"North End",area:"Boston",type:"Wine Bar",vibe:["Date Night","Small Plates","Chill"],music:false,karaoke:false,rating:4.4,revCt:213,lat:42.3645,lng:-71.0535,price:2,desc:"Hanover Street cafe and wine bar. Italian pours, amari flights, and a relaxed neighborhood feel."},
+  {id:187,name:"Florentine Cafe",hood:"North End",area:"Boston",type:"Lounge",vibe:["Date Night","Chill","Iconic"],music:false,karaoke:false,rating:4.3,revCt:1245,lat:42.3647,lng:-71.0533,price:2,desc:"Corner of Hanover and Prince. Open-window people-watching, a long marble bar, and one of the best classic martinis in the neighborhood."},
+  {id:188,name:"The Flamingo",hood:"North End",area:"Boston",type:"Cocktail Bar",vibe:["Trendy","Date Night","Late Night"],music:false,karaoke:false,rating:4.4,revCt:176,lat:42.3656,lng:-71.0538,price:3,desc:"Playful Commercial Street cocktail bar with tropical influences, vinyl on the turntable, and a late-night North End crowd."},
+  {id:189,name:"Durty Nelly's",hood:"Faneuil Hall",area:"Boston",type:"Irish Pub",vibe:["Live Music","Big Crowds","Late Night"],music:true,karaoke:false,rating:4.1,revCt:1034,lat:42.3617,lng:-71.0563,price:2,desc:"Traditional Irish pub on Blackstone Street near Haymarket. Live music, poured Guinness, and a steady weekend crowd spilling in from Faneuil Hall."},
+
+  // ─── Faneuil Hall additions ───
+  {id:190,name:"White Bull Tavern",hood:"Faneuil Hall",area:"Boston",type:"Pub",vibe:["Late Night","Young Crowd","Dancing","Big Crowds"],music:false,karaoke:false,rating:3.9,revCt:1287,lat:42.3607,lng:-71.0573,price:2,desc:"Union Street multi-level bar with a rooftop deck, DJs, and late-night energy. A Faneuil Hall go-to for pre- and post-game nights."},
+  {id:191,name:"Hennessy's",hood:"Faneuil Hall",area:"Boston",type:"Irish Pub",vibe:["Live Music","Big Crowds","Dancing","Late Night"],music:true,karaoke:false,rating:4.0,revCt:1745,lat:42.3611,lng:-71.0569,price:2,desc:"Three-floor Union Street Irish pub with live music downstairs, a dance floor upstairs, and a rooftop bar. Stays packed on weekends."},
+  {id:192,name:"The Point",hood:"Faneuil Hall",area:"Boston",type:"Pub",vibe:["Young Crowd","Late Night","Big Crowds"],music:false,karaoke:false,rating:4.0,revCt:987,lat:42.3622,lng:-71.0569,price:2,desc:"Hanover Street corner bar at the edge of Faneuil Hall. Solid cocktails, a young after-work crowd, and late nights that roll into the North End."},
+  {id:193,name:"Green Dragon Tavern",hood:"Faneuil Hall",area:"Boston",type:"Pub",vibe:["Iconic","Live Music","Chill"],music:true,karaoke:false,rating:4.2,revCt:2156,lat:42.3608,lng:-71.0570,price:2,desc:"Marshall Street tavern trading on the name of the original 'Headquarters of the Revolution.' Live music, pub fare, and a piece of Boston bar history."},
 ]
 
 export const ALL_TYPES = [...new Set(BARS.map(b => b.type))].sort()
@@ -286,4 +304,13 @@ export const BAR_WEBSITES = {
   175: 'https://www.easternstandardboston.com',
   178: 'https://www.sojubaboston.com',
   179: 'https://www.trilliumbrewing.com/pages/fenway',
+  180: 'https://www.roccosboston.com',
+  183: 'https://www.farmacianorthend.com',
+  185: 'https://www.caffeparadiso.com',
+  187: 'https://www.florentinecafeboston.com',
+  189: 'https://www.durtynellysboston.com',
+  190: 'https://www.thewhitebulltavern.com',
+  191: 'https://www.hennessysboston.com',
+  192: 'https://www.thepointboston.com',
+  193: 'https://www.greendragontavern.com',
 }
