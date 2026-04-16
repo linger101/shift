@@ -110,32 +110,56 @@ export async function sendFriendRequest(requesterId, addresseeId) {
     .insert({ requester_id: requesterId, addressee_id: addresseeId })
     .select()
     .single()
-  if (error) console.error('Friend request error:', error)
+  if (error) {
+    console.error('sendFriendRequest error:', error.code, error.message)
+    return null
+  }
   return data
 }
 
 export async function getFriendships(userId) {
   if (!supabase) return { accepted: [], incoming: [], outgoing: [] }
-  const { data } = await supabase
+
+  // Step 1: fetch raw friendship rows (no join — FK points to auth.users not profiles)
+  const { data, error } = await supabase
     .from('friendships')
-    .select(`
-      id, status, requester_id, addressee_id,
-      requester:profiles!friendships_requester_id_fkey(id, username),
-      addressee:profiles!friendships_addressee_id_fkey(id, username)
-    `)
+    .select('id, status, requester_id, addressee_id')
     .or(`requester_id.eq.${userId},addressee_id.eq.${userId}`)
 
-  if (!data) return { accepted: [], incoming: [], outgoing: [] }
+  if (error) {
+    console.error('getFriendships error:', error)
+    return { accepted: [], incoming: [], outgoing: [] }
+  }
+  if (!data || data.length === 0) return { accepted: [], incoming: [], outgoing: [] }
+
+  // Step 2: look up profiles for every other user in one query
+  const otherIds = [...new Set(
+    data.map(f => f.requester_id === userId ? f.addressee_id : f.requester_id)
+  )]
+  const { data: profiles, error: profilesError } = await supabase
+    .from('profiles')
+    .select('id, username')
+    .in('id', otherIds)
+
+  if (profilesError) console.error('getFriendships profiles error:', profilesError)
+
+  const profileMap = {}
+  if (profiles) profiles.forEach(p => { profileMap[p.id] = p })
 
   const accepted = data
     .filter(f => f.status === 'accepted')
-    .map(f => ({ ...(f.requester_id === userId ? f.addressee : f.requester), friendshipId: f.id }))
+    .map(f => {
+      const otherId = f.requester_id === userId ? f.addressee_id : f.requester_id
+      return { ...profileMap[otherId], friendshipId: f.id }
+    })
 
-  const incoming = data.filter(f => f.status === 'pending' && f.addressee_id === userId)
+  const incoming = data
+    .filter(f => f.status === 'pending' && f.addressee_id === userId)
+    .map(f => ({ ...f, requester: profileMap[f.requester_id] }))
 
   const outgoing = data
     .filter(f => f.status === 'pending' && f.requester_id === userId)
-    .map(f => ({ ...f.addressee, friendshipId: f.id }))
+    .map(f => ({ ...profileMap[f.addressee_id], friendshipId: f.id }))
 
   return { accepted, incoming, outgoing }
 }
