@@ -24,7 +24,7 @@ function FlyTo({ center }) {
 function BarPopup({ bar, onOpen, onClose }) {
   return (
     <div style={{
-      position: 'absolute', bottom: 12, left: 12, right: 12, zIndex: 1000,
+      position: 'fixed', bottom: 12, left: 12, right: 12, zIndex: 9999,
       background: '#1C1710', borderRadius: 6, padding: 16,
       border: '1px solid #8B7647', boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
       borderLeft: '3px solid #C8A96E'
