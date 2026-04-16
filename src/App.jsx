@@ -80,7 +80,7 @@ function BarCard({ bar, user, reviews, onFav, onOpen }) {
   )
 }
 
-// ─── Detail Modal (dark themed) ───
+// ─── Detail Modal ───
 
 function Detail({ bar, user, reviews, onClose, onFav, onReview }) {
   const [txt, setTxt] = useState('')
@@ -243,6 +243,8 @@ export default function App() {
   const [showAuth, setShowAuth] = useState(true)
   const [reviews, setReviews] = useState([])
   const [search, setSearch] = useState('')
+
+  // Applied filter state
   const [selTypes, setSelTypes] = useState([])
   const [selVibes, setSelVibes] = useState([])
   const [selAreas, setSelAreas] = useState([])
@@ -250,10 +252,26 @@ export default function App() {
   const [musicOnly, setMusicOnly] = useState(false)
   const [favOnly, setFavOnly] = useState(false)
   const [sortBy, setSortBy] = useState('rating')
+
+  // Draft filter state (shown in panel before Apply is clicked)
+  const [draftTypes, setDraftTypes] = useState([])
+  const [draftVibes, setDraftVibes] = useState([])
+  const [draftAreas, setDraftAreas] = useState([])
+  const [draftMinRat, setDraftMinRat] = useState(0)
+  const [draftMusicOnly, setDraftMusicOnly] = useState(false)
+  const [draftSortBy, setDraftSortBy] = useState('rating')
+
   const [detail, setDetail] = useState(null)
   const [tab, setTab] = useState('discover')
   const [showFilters, setShowFilters] = useState(false)
   const [view, setView] = useState('list')
+
+  // Friends state
+  const [friends, setFriends] = useState([])
+  const [friendRequests, setFriendRequests] = useState([])
+  const [outgoingRequests, setOutgoingRequests] = useState([])
+  const [friendSearch, setFriendSearch] = useState('')
+  const [friendResults, setFriendResults] = useState([])
 
   // Load session + data
   useEffect(() => {
@@ -264,6 +282,10 @@ export default function App() {
         const p = await db.getProfile(session.user.id)
         if (p) setProfile(p)
         setShowAuth(false)
+        const { accepted, incoming, outgoing } = await db.getFriendships(session.user.id)
+        setFriends(accepted)
+        setFriendRequests(incoming)
+        setOutgoingRequests(outgoing)
       }
       const r = await db.getReviews()
       setReviews(r)
@@ -276,11 +298,16 @@ export default function App() {
     const p = await db.getProfile(u.id)
     setProfile(p)
     setShowAuth(false)
+    const { accepted, incoming, outgoing } = await db.getFriendships(u.id)
+    setFriends(accepted)
+    setFriendRequests(incoming)
+    setOutgoingRequests(outgoing)
   }, [])
 
   const logout = useCallback(async () => {
     await db.signOut()
     setUser(undefined); setProfile(null); setShowAuth(true)
+    setFriends([]); setFriendRequests([]); setOutgoingRequests([])
   }, [])
 
   const toggleFav = useCallback(async (barId) => {
@@ -298,11 +325,59 @@ export default function App() {
     if (r) setReviews(prev => [r, ...prev])
   }, [])
 
+  const openFilters = () => {
+    setDraftTypes(selTypes)
+    setDraftVibes(selVibes)
+    setDraftAreas(selAreas)
+    setDraftMinRat(minRat)
+    setDraftMusicOnly(musicOnly)
+    setDraftSortBy(sortBy)
+    setShowFilters(true)
+  }
+
+  const applyFilters = () => {
+    setSelTypes(draftTypes)
+    setSelVibes(draftVibes)
+    setSelAreas(draftAreas)
+    setMinRat(draftMinRat)
+    setMusicOnly(draftMusicOnly)
+    setSortBy(draftSortBy)
+    setShowFilters(false)
+  }
+
+  const clearDraftFilters = () => {
+    setDraftTypes([]); setDraftVibes([]); setDraftAreas([])
+    setDraftMinRat(0); setDraftMusicOnly(false); setDraftSortBy('rating')
+  }
+
+  const searchFriends = async () => {
+    if (!friendSearch.trim()) return
+    setFriendResults(await db.searchUsers(friendSearch))
+  }
+
+  const addFriend = async (addresseeId) => {
+    if (!profile) return
+    await db.sendFriendRequest(profile.id, addresseeId)
+    setOutgoingRequests(prev => [...prev, addresseeId])
+    setFriendResults([])
+    setFriendSearch('')
+  }
+
+  const acceptFriend = async (req) => {
+    await db.updateFriendship(req.id, 'accepted')
+    setFriendRequests(prev => prev.filter(r => r.id !== req.id))
+    setFriends(prev => [...prev, req.requester])
+  }
+
+  const declineFriend = async (req) => {
+    await db.updateFriendship(req.id, 'declined')
+    setFriendRequests(prev => prev.filter(r => r.id !== req.id))
+  }
+
   const tog = (arr, setArr, val) => setArr(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val])
 
   if (showAuth) return <Auth onLogin={handleLogin} />
 
-  // Combined user object for components
   const userData = profile ? { ...profile, username: profile.username } : null
 
   // Filter
@@ -323,7 +398,10 @@ export default function App() {
   else if (sortBy === 'price') filtered.sort((a, b) => a.price - b.price)
 
   const afc = selTypes.length + selVibes.length + selAreas.length + (minRat ? 1 : 0) + (musicOnly ? 1 : 0) + (favOnly ? 1 : 0)
-  const recent = [...reviews].slice(0, 20)
+  const draftAfc = draftTypes.length + draftVibes.length + draftAreas.length + (draftMinRat ? 1 : 0) + (draftMusicOnly ? 1 : 0)
+
+  const friendIds = new Set(friends.map(f => f.id))
+  const friendReviews = reviews.filter(r => friendIds.has(r.user_id)).slice(0, 20)
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
@@ -344,26 +422,50 @@ export default function App() {
           {/* Tabs */}
           <div style={{ display: 'flex', gap: 0, marginBottom: 8, border: '1px solid var(--bd)', borderRadius: 4, overflow: 'hidden' }}>
             {[{ id: 'discover', l: 'Discover' }, { id: 'favorites', l: 'Favorites' }, { id: 'activity', l: 'Friends' }].map((t, i) => (
-              <button key={t.id} onClick={() => { setTab(t.id); if (t.id === 'favorites') setFavOnly(true); else setFavOnly(false) }} style={{
+              <button key={t.id} onClick={() => {
+                setTab(t.id)
+                setShowFilters(false)
+                if (t.id === 'favorites') setFavOnly(true)
+                else setFavOnly(false)
+              }} style={{
                 flex: 1, padding: '8px 0', background: tab === t.id ? 'rgba(74,103,65,0.1)' : 'transparent',
                 border: 'none', borderRight: i < 2 ? '1px solid var(--bd)' : 'none',
                 color: tab === t.id ? 'var(--green)' : 'var(--text-faint)', fontWeight: 700, cursor: 'pointer',
-                fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1.5px'
-              }}>{t.l}</button>
+                fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1.5px',
+                position: 'relative'
+              }}>
+                {t.l}
+                {t.id === 'activity' && friendRequests.length > 0 && (
+                  <span style={{
+                    position: 'absolute', top: 4, right: 8, background: 'var(--red-bright)', color: '#fff',
+                    borderRadius: '50%', width: 14, height: 14, fontSize: 9, fontWeight: 700,
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center'
+                  }}>{friendRequests.length}</span>
+                )}
+              </button>
             ))}
           </div>
 
           {tab !== 'activity' && (
             <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search bars, neighborhoods..."
-                style={{ flex: 1, padding: '9px 14px', background: 'var(--bg-card)', border: '1px solid var(--bd)', borderRadius: 4, color: 'var(--text)', fontSize: 13 }} />
+              <div style={{ flex: 1, position: 'relative' }}>
+                <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search bars, neighborhoods..."
+                  style={{ width: '100%', padding: '9px 32px 9px 14px', background: 'var(--bg-card)', border: '1px solid var(--bd)', borderRadius: 4, color: 'var(--text)', fontSize: 13 }} />
+                {search && (
+                  <button onClick={() => setSearch('')} style={{
+                    position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)',
+                    background: 'none', border: 'none', color: 'var(--text-faint)', cursor: 'pointer',
+                    fontSize: 14, padding: 0, lineHeight: 1
+                  }}>✕</button>
+                )}
+              </div>
               <button onClick={() => setView(view === 'list' ? 'map' : 'list')} style={{
                 padding: '9px 14px', background: view === 'map' ? 'rgba(74,103,65,0.1)' : 'var(--bg-card)',
                 border: `1px solid ${view === 'map' ? 'var(--green-dim)' : 'var(--bd)'}`, borderRadius: 4,
                 color: view === 'map' ? 'var(--green)' : 'var(--text-faint)', cursor: 'pointer', fontSize: 12,
                 fontWeight: 700, whiteSpace: 'nowrap', fontFamily: 'var(--font-display)'
               }}>{view === 'map' ? '⊞ List' : '📍 Map'}</button>
-              <button onClick={() => setShowFilters(!showFilters)} style={{
+              <button onClick={showFilters ? () => setShowFilters(false) : openFilters} style={{
                 padding: '9px 14px', background: afc ? 'rgba(200,169,110,0.1)' : 'var(--bg-card)',
                 border: `1px solid ${afc ? 'var(--gold-dim)' : 'var(--bd)'}`, borderRadius: 4,
                 color: afc ? 'var(--gold)' : 'var(--text-faint)', cursor: 'pointer', fontWeight: 700,
@@ -373,41 +475,50 @@ export default function App() {
           )}
         </div>
 
-        {/* Filters */}
+        {/* Filters Panel */}
         {showFilters && tab !== 'activity' && (
           <div style={{ maxWidth: 680, margin: '0 auto', padding: '0 16px 12px', borderTop: '1px solid var(--bd)' }}>
             <div style={{ margin: '10px 0 6px' }}>
               <p style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 5px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '2px' }}>Sort By</p>
               <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                 {[{ v: 'rating', l: 'Top Rated' }, { v: 'reviews', l: 'Most Popular' }, { v: 'name', l: 'A–Z' }, { v: 'price', l: 'Price ↑' }].map(s => (
-                  <Chip key={s.v} active={sortBy === s.v} onClick={() => setSortBy(s.v)} variant="type">{s.l}</Chip>
+                  <Chip key={s.v} active={draftSortBy === s.v} onClick={() => setDraftSortBy(s.v)} variant="type">{s.l}</Chip>
                 ))}
               </div>
             </div>
             <div style={{ margin: '8px 0' }}>
               <p style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 5px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '2px' }}>Area</p>
-              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>{ALL_AREAS.map(a => <Chip key={a} active={selAreas.includes(a)} onClick={() => tog(selAreas, setSelAreas, a)}>{a}</Chip>)}</div>
+              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>{ALL_AREAS.map(a => <Chip key={a} active={draftAreas.includes(a)} onClick={() => tog(draftAreas, setDraftAreas, a)}>{a}</Chip>)}</div>
             </div>
             <div style={{ margin: '8px 0' }}>
               <p style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 5px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '2px' }}>Bar Type</p>
-              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>{ALL_TYPES.map(t => <Chip key={t} active={selTypes.includes(t)} onClick={() => tog(selTypes, setSelTypes, t)} variant="type">{t}</Chip>)}</div>
+              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>{ALL_TYPES.map(t => <Chip key={t} active={draftTypes.includes(t)} onClick={() => tog(draftTypes, setDraftTypes, t)} variant="type">{t}</Chip>)}</div>
             </div>
             <div style={{ margin: '8px 0' }}>
               <p style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 5px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '2px' }}>Vibe</p>
-              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>{ALL_VIBES.map(v => <Chip key={v} active={selVibes.includes(v)} onClick={() => tog(selVibes, setSelVibes, v)} variant="vibe">{v}</Chip>)}</div>
+              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>{ALL_VIBES.map(v => <Chip key={v} active={draftVibes.includes(v)} onClick={() => tog(draftVibes, setDraftVibes, v)} variant="vibe">{v}</Chip>)}</div>
             </div>
             <div style={{ margin: '8px 0' }}>
               <p style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 5px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '2px' }}>Min Rating</p>
-              <div style={{ display: 'flex', gap: 4 }}>{[0, 3.5, 4.0, 4.3, 4.5].map(r => <Chip key={r} active={minRat === r} onClick={() => setMinRat(r)}>{r === 0 ? 'Any' : `${r}+`}</Chip>)}</div>
+              <div style={{ display: 'flex', gap: 4 }}>{[0, 3.5, 4.0, 4.3, 4.5].map(r => <Chip key={r} active={draftMinRat === r} onClick={() => setDraftMinRat(r)}>{r === 0 ? 'Any' : `${r}+`}</Chip>)}</div>
             </div>
             <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
-              <Chip active={musicOnly} onClick={() => setMusicOnly(!musicOnly)} variant="vibe">♪ Live Music</Chip>
-              {userData && <Chip active={favOnly} onClick={() => setFavOnly(!favOnly)}>★ Favorites</Chip>}
+              <Chip active={draftMusicOnly} onClick={() => setDraftMusicOnly(!draftMusicOnly)} variant="vibe">♪ Live Music</Chip>
             </div>
-            {afc > 0 && (
-              <button onClick={() => { setSelTypes([]); setSelVibes([]); setSelAreas([]); setMinRat(0); setMusicOnly(false); setFavOnly(false); setSortBy('rating') }}
-                style={{ marginTop: 8, background: 'none', border: '1px solid rgba(160,82,45,0.3)', padding: '5px 14px', borderRadius: 4, color: 'var(--red-bright)', cursor: 'pointer', fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Clear All</button>
-            )}
+            <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center' }}>
+              <button onClick={applyFilters} style={{
+                padding: '9px 28px', background: 'var(--green)', border: 'none', borderRadius: 4,
+                color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 11,
+                fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px'
+              }}>Apply{draftAfc > 0 ? ` (${draftAfc})` : ''}</button>
+              {draftAfc > 0 && (
+                <button onClick={clearDraftFilters} style={{
+                  background: 'none', border: '1px solid rgba(160,82,45,0.3)', padding: '9px 16px', borderRadius: 4,
+                  color: 'var(--red-bright)', cursor: 'pointer', fontSize: 11, fontWeight: 700,
+                  fontFamily: 'var(--font-display)', textTransform: 'uppercase'
+                }}>Clear</button>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -416,28 +527,98 @@ export default function App() {
       <div style={{ maxWidth: 680, margin: '0 auto', padding: tab === 'activity' || view === 'list' ? '12px 16px 80px' : '0' }}>
         {tab === 'activity' ? (
           <div>
-            <h2 style={{ fontSize: 18, fontFamily: 'var(--font-display)', fontWeight: 700, margin: '0 0 14px' }}>FRIEND ACTIVITY</h2>
-            {!userData && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>Sign in to see friend reviews.</p>}
-            {recent.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>No reviews yet. Be the first!</p>}
-            {recent.map((r, i) => {
-              const bar = BARS.find(b => b.id === r.bar_id)
-              return (
-                <div key={i} onClick={() => bar && setDetail(bar)} style={{
-                  padding: 14, marginBottom: 6, background: 'var(--bg-card)', borderRadius: 4,
-                  border: '1px solid var(--bd)', cursor: 'pointer', borderLeft: '2px solid var(--gold-dim)'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-display)' }}>@{r.username}</span>
-                    <span style={{ fontSize: 10, color: 'var(--text-faint)' }}>{new Date(r.created_at).toLocaleDateString()}</span>
+            <h2 style={{ fontSize: 18, fontFamily: 'var(--font-display)', fontWeight: 700, margin: '0 0 16px' }}>FRIENDS</h2>
+
+            {!userData ? (
+              <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>Sign in to add friends and see their reviews.</p>
+            ) : (
+              <>
+                {/* Pending Requests */}
+                {friendRequests.length > 0 && (
+                  <div style={{ marginBottom: 20 }}>
+                    <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--gold)', margin: '0 0 8px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Pending Requests ({friendRequests.length})</p>
+                    {friendRequests.map(req => (
+                      <div key={req.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', marginBottom: 6, background: 'var(--bg-card)', borderRadius: 4, border: '1px solid var(--bd)', borderLeft: '2px solid var(--gold-dim)' }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-display)' }}>@{req.requester?.username}</span>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button onClick={() => acceptFriend(req)} style={{ padding: '5px 12px', background: 'var(--green)', border: 'none', borderRadius: 3, color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Accept</button>
+                          <button onClick={() => declineFriend(req)} style={{ padding: '5px 12px', background: 'none', border: '1px solid var(--bd)', borderRadius: 3, color: 'var(--text-faint)', fontWeight: 700, cursor: 'pointer', fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Decline</button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, fontFamily: 'var(--font-display)' }}>{bar?.name || 'Unknown'}</span>
-                    <Stars r={r.rating} sz={12} />
+                )}
+
+                {/* Add Friend */}
+                <div style={{ marginBottom: 20, padding: 16, background: 'var(--bg-card)', borderRadius: 4, border: '1px solid var(--bd)' }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 10px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Add Friend</p>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <input value={friendSearch} onChange={e => setFriendSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && searchFriends()} placeholder="Search by username..."
+                      style={{ flex: 1, padding: '8px 12px', background: '#fff', border: '1px solid var(--bd)', borderRadius: 4, color: 'var(--text)', fontSize: 13 }} />
+                    <button onClick={searchFriends} style={{ padding: '8px 16px', background: 'var(--green)', border: 'none', borderRadius: 4, color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 11, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Search</button>
                   </div>
-                  <p style={{ margin: 0, fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.4 }}>{r.text}</p>
+                  {friendResults.length > 0 && (
+                    <div style={{ marginTop: 8 }}>
+                      {friendResults.filter(u => u.id !== profile?.id).map(u => {
+                        const isFriend = friends.some(f => f.id === u.id)
+                        const isPending = outgoingRequests.includes(u.id)
+                        return (
+                          <div key={u.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid var(--bd)' }}>
+                            <span style={{ fontSize: 13, color: 'var(--text)', fontFamily: 'var(--font-display)' }}>@{u.username}</span>
+                            {isFriend ? (
+                              <span style={{ fontSize: 11, color: 'var(--green)', fontWeight: 700, fontFamily: 'var(--font-display)' }}>Friends ✓</span>
+                            ) : isPending ? (
+                              <span style={{ fontSize: 11, color: 'var(--text-faint)', fontWeight: 700, fontFamily: 'var(--font-display)' }}>Pending</span>
+                            ) : (
+                              <button onClick={() => addFriend(u.id)} style={{ padding: '4px 12px', background: 'var(--green)', border: 'none', borderRadius: 3, color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Add</button>
+                            )}
+                          </div>
+                        )
+                      })}
+                      {friendResults.filter(u => u.id !== profile?.id).length === 0 && (
+                        <p style={{ margin: '8px 0 0', fontSize: 12, color: 'var(--text-faint)' }}>No users found.</p>
+                      )}
+                    </div>
+                  )}
                 </div>
-              )
-            })}
+
+                {/* Current Friends */}
+                {friends.length > 0 && (
+                  <div style={{ marginBottom: 20 }}>
+                    <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 8px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Your Friends ({friends.length})</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                      {friends.map(f => (
+                        <span key={f.id} style={{ padding: '4px 12px', background: 'rgba(74,103,65,0.1)', border: '1px solid var(--green-dim)', borderRadius: 3, fontSize: 12, color: 'var(--green)', fontFamily: 'var(--font-display)', fontWeight: 600 }}>@{f.username}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Friend Activity */}
+                <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 10px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px' }}>Friend Activity</p>
+                {friends.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>Add friends above to see their bar reviews here.</p>}
+                {friends.length > 0 && friendReviews.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>No reviews from friends yet.</p>}
+                {friendReviews.map((r, i) => {
+                  const bar = BARS.find(b => b.id === r.bar_id)
+                  return (
+                    <div key={i} onClick={() => bar && setDetail(bar)} style={{
+                      padding: 14, marginBottom: 6, background: 'var(--bg-card)', borderRadius: 4,
+                      border: '1px solid var(--bd)', cursor: 'pointer', borderLeft: '2px solid var(--gold-dim)'
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-display)' }}>@{r.username}</span>
+                        <span style={{ fontSize: 10, color: 'var(--text-faint)' }}>{new Date(r.created_at).toLocaleDateString()}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                        <span style={{ fontSize: 14, fontWeight: 700, fontFamily: 'var(--font-display)' }}>{bar?.name || 'Unknown'}</span>
+                        <Stars r={r.rating} sz={12} />
+                      </div>
+                      <p style={{ margin: 0, fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.4 }}>{r.text}</p>
+                    </div>
+                  )
+                })}
+              </>
+            )}
           </div>
         ) : view === 'map' ? (
           <div style={{ height: 'calc(100vh - 160px)', padding: '8px 16px 16px' }}>

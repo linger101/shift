@@ -15,6 +15,8 @@ export const supabase = supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null
 
+const SITE_URL = 'https://barcrawl-boston.vercel.app'
+
 // ─── Auth helpers ───
 
 export async function signUp(email, password, username) {
@@ -22,7 +24,10 @@ export async function signUp(email, password, username) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { username } }
+    options: {
+      data: { username },
+      emailRedirectTo: SITE_URL,
+    }
   })
   if (error) return { error: error.message }
 
@@ -84,4 +89,58 @@ export async function addReview(review) {
 export async function updateFavorites(userId, favorites) {
   if (!supabase) return
   await supabase.from('profiles').update({ favorites }).eq('id', userId)
+}
+
+// ─── Friends ───
+
+export async function searchUsers(query) {
+  if (!supabase || !query.trim()) return []
+  const { data } = await supabase
+    .from('profiles')
+    .select('id, username')
+    .ilike('username', `%${query.trim()}%`)
+    .limit(10)
+  return data || []
+}
+
+export async function sendFriendRequest(requesterId, addresseeId) {
+  if (!supabase) return null
+  const { data, error } = await supabase
+    .from('friendships')
+    .insert({ requester_id: requesterId, addressee_id: addresseeId })
+    .select()
+    .single()
+  if (error) console.error('Friend request error:', error)
+  return data
+}
+
+export async function getFriendships(userId) {
+  if (!supabase) return { accepted: [], incoming: [], outgoing: [] }
+  const { data } = await supabase
+    .from('friendships')
+    .select(`
+      id, status, requester_id, addressee_id,
+      requester:profiles!friendships_requester_id_fkey(id, username),
+      addressee:profiles!friendships_addressee_id_fkey(id, username)
+    `)
+    .or(`requester_id.eq.${userId},addressee_id.eq.${userId}`)
+
+  if (!data) return { accepted: [], incoming: [], outgoing: [] }
+
+  const accepted = data
+    .filter(f => f.status === 'accepted')
+    .map(f => f.requester_id === userId ? f.addressee : f.requester)
+
+  const incoming = data.filter(f => f.status === 'pending' && f.addressee_id === userId)
+
+  const outgoing = data
+    .filter(f => f.status === 'pending' && f.requester_id === userId)
+    .map(f => f.addressee_id)
+
+  return { accepted, incoming, outgoing }
+}
+
+export async function updateFriendship(friendshipId, status) {
+  if (!supabase) return
+  await supabase.from('friendships').update({ status }).eq('id', friendshipId)
 }

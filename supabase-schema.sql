@@ -61,3 +61,26 @@ create trigger on_auth_user_created
 
 -- 4. Enable realtime for reviews (so friends see updates live)
 alter publication supabase_realtime add table public.reviews;
+
+-- 5. Friendships table
+create table if not exists public.friendships (
+  id uuid default gen_random_uuid() primary key,
+  requester_id uuid references auth.users on delete cascade not null,
+  addressee_id uuid references auth.users on delete cascade not null,
+  status text default 'pending' check (status in ('pending', 'accepted', 'declined')),
+  created_at timestamp with time zone default now(),
+  unique(requester_id, addressee_id)
+);
+
+alter table public.friendships enable row level security;
+
+create policy "Users can view their own friendships"
+  on public.friendships for select using (
+    auth.uid() = requester_id or auth.uid() = addressee_id
+  );
+
+create policy "Authenticated users can send friend requests"
+  on public.friendships for insert with check (auth.uid() = requester_id);
+
+create policy "Addressee can update friendship status"
+  on public.friendships for update using (auth.uid() = addressee_id);
