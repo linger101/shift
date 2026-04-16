@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker } from 'react-leaflet'
 import L from 'leaflet'
 import { PRICE_LABELS } from '../data/bars'
 
@@ -23,12 +23,6 @@ function createIcon(bar, isFav, isSel) {
     iconSize: [size + ring * 2, size + ring * 2],
     iconAnchor: [(size + ring * 2) / 2, (size + ring * 2) / 2],
   })
-}
-
-function FlyTo({ center }) {
-  const map = useMap()
-  if (center) map.flyTo(center, 15, { duration: 0.4 })
-  return null
 }
 
 function BarCard({ bar, user, onOpen, onClose, onFav }) {
@@ -67,8 +61,8 @@ function BarCard({ bar, user, onOpen, onClose, onFav }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 14 }}>
         <span style={{ background: '#F0EDE8', color: '#4A6741', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>{bar.type}</span>
         <span style={{ background: '#F0EDE8', color: '#8B7647', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-display)' }}>{PRICE_LABELS[bar.price]}</span>
-        {bar.music && <span style={{ background: '#F0EDE8', color: '#C0623A', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>♪ Live</span>}
-        {bar.karaoke && <span style={{ background: '#F0EDE8', color: '#8B7647', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>🎤 Karaoke</span>}
+        {bar.music && <span style={{ background: '#F0EDE8', color: '#C0623A', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Live Music</span>}
+        {bar.karaoke && <span style={{ background: '#F0EDE8', color: '#8B7647', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Karaoke</span>}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -89,7 +83,6 @@ function BarCard({ bar, user, onOpen, onClose, onFav }) {
 
 export default function BarMap({ bars, user, onOpen, onFav }) {
   const [selected, setSelected] = useState(null)
-  const flyCenter = selected ? [selected.lat, selected.lng] : null
 
   return (
     <div style={{ position: 'relative', height: '100%' }}>
@@ -104,7 +97,6 @@ export default function BarMap({ bars, user, onOpen, onFav }) {
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
         />
-        {flyCenter && <FlyTo center={flyCenter} />}
         {bars.map(bar => {
           const isFav = user?.favorites?.includes(bar.id)
           const isSel = selected?.id === bar.id

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { BARS, ALL_TYPES, ALL_VIBES, ALL_AREAS, PRICE_LABELS } from './data/bars'
+import { BARS, ALL_TYPES, ALL_VIBES, ALL_AREAS, PRICE_LABELS, BAR_WEBSITES } from './data/bars'
 import BarMap from './components/BarMap'
 import * as db from './lib/supabase'
 
@@ -62,8 +62,8 @@ function BarCard({ bar, user, reviews, onFav, onOpen }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 10 }}>
         <span style={{ background: 'rgba(74,103,65,0.12)', color: 'var(--green)', padding: '3px 8px', borderRadius: 3, fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(74,103,65,0.2)' }}>{bar.type}</span>
         <span style={{ background: 'rgba(200,169,110,0.1)', color: 'var(--gold-dim)', padding: '3px 8px', borderRadius: 3, fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-display)', border: '1px solid rgba(200,169,110,0.15)' }}>{PRICE_LABELS[bar.price]}</span>
-        {bar.music && <span style={{ background: 'rgba(160,82,45,0.1)', color: 'var(--red-bright)', padding: '3px 8px', borderRadius: 3, fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(160,82,45,0.15)' }}>♪ Live</span>}
-        {bar.karaoke && <span style={{ background: 'rgba(139,118,71,0.1)', color: 'var(--gold-dim)', padding: '3px 8px', borderRadius: 3, fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(139,118,71,0.2)' }}>🎤 Karaoke</span>}
+        {bar.music && <span style={{ background: 'rgba(160,82,45,0.1)', color: 'var(--red-bright)', padding: '3px 8px', borderRadius: 3, fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(160,82,45,0.15)' }}>Live Music</span>}
+        {bar.karaoke && <span style={{ background: 'rgba(139,118,71,0.1)', color: 'var(--gold-dim)', padding: '3px 8px', borderRadius: 3, fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase', border: '1px solid rgba(139,118,71,0.2)' }}>Karaoke</span>}
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3, marginBottom: 10 }}>
         {bar.vibe.slice(0, 4).map(v => (
@@ -97,8 +97,8 @@ function Detail({ bar, user, reviews, onClose, onFav, onReview }) {
 
   const m = { bg: '#1C1710', card: '#251F17', bd: '#3D3425', tx: '#E8DCC8', txD: '#B8A88E', txF: '#7A6E5E' }
 
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${bar.lat},${bar.lng}`
-  const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(bar.name + ' ' + bar.hood + ' Boston')}`
+  const website = BAR_WEBSITES[bar.id] || null
+  const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(bar.name + ' Boston')}/@${bar.lat},${bar.lng},17z`
 
   const linkStyle = {
     flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
@@ -126,8 +126,8 @@ function Detail({ bar, user, reviews, onClose, onFav, onReview }) {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
           <span style={{ background: 'rgba(74,103,65,0.3)', color: '#6B9B5E', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>{bar.type}</span>
           <span style={{ background: 'rgba(200,169,110,0.15)', color: '#C8A96E', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)' }}>{PRICE_LABELS[bar.price]}</span>
-          {bar.music && <span style={{ background: 'rgba(160,82,45,0.2)', color: '#C0623A', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>♪ Live Music</span>}
-          {bar.karaoke && <span style={{ background: 'rgba(139,118,71,0.15)', color: '#C8A96E', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>🎤 Karaoke</span>}
+          {bar.music && <span style={{ background: 'rgba(160,82,45,0.2)', color: '#C0623A', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Live Music</span>}
+          {bar.karaoke && <span style={{ background: 'rgba(139,118,71,0.15)', color: '#C8A96E', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>Karaoke</span>}
           {bar.vibe.map(v => <span key={v} style={{ background: 'rgba(200,169,110,0.08)', color: m.txF, padding: '4px 10px', borderRadius: 20, fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase' }}>{v}</span>)}
         </div>
 
@@ -140,14 +140,16 @@ function Detail({ bar, user, reviews, onClose, onFav, onReview }) {
 
         {/* Action links */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-          <a href={searchUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-            <span style={{ fontSize: 14 }}>🌐</span> Website
+          {website && (
+            <a href={website} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+              Website
+            </a>
+          )}
+          <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+            Directions
           </a>
           <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-            <span style={{ fontSize: 14 }}>📍</span> Directions
-          </a>
-          <a href={`https://www.google.com/maps/search/${encodeURIComponent(bar.name + ' Boston')}/@${bar.lat},${bar.lng},17z`} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-            <span style={{ fontSize: 14 }}>⭐</span> Google Reviews
+            Google Maps
           </a>
         </div>
 
@@ -266,12 +268,21 @@ function Auth({ onLogin }) {
 
 // ─── Main App ───
 
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 3958.8 // miles
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLng = (lng2 - lng1) * Math.PI / 180
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+}
+
 export default function App() {
   const [user, setUser] = useState(undefined)
   const [profile, setProfile] = useState(null)
   const [showAuth, setShowAuth] = useState(true)
   const [reviews, setReviews] = useState([])
   const [search, setSearch] = useState('')
+  const [userLocation, setUserLocation] = useState(null)
 
   // Applied filter state
   const [selTypes, setSelTypes] = useState([])
@@ -374,8 +385,15 @@ export default function App() {
     setMinRat(draftMinRat)
     setMusicOnly(draftMusicOnly)
     setKaraokeOnly(draftKaraokeOnly)
-    setSortBy(draftSortBy)
+    const newSort = draftSortBy
+    setSortBy(newSort)
     setShowFilters(false)
+    if (newSort === 'distance' && !userLocation) {
+      navigator.geolocation?.getCurrentPosition(
+        pos => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => setSortBy('rating')
+      )
+    }
   }
 
   const clearDraftFilters = () => {
@@ -430,6 +448,7 @@ export default function App() {
   else if (sortBy === 'reviews') filtered.sort((a, b) => b.revCt - a.revCt)
   else if (sortBy === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name))
   else if (sortBy === 'price') filtered.sort((a, b) => a.price - b.price)
+  else if (sortBy === 'distance' && userLocation) filtered.sort((a, b) => haversine(userLocation.lat, userLocation.lng, a.lat, a.lng) - haversine(userLocation.lat, userLocation.lng, b.lat, b.lng))
 
   const afc = selTypes.length + selVibes.length + selAreas.length + (minRat ? 1 : 0) + (musicOnly ? 1 : 0) + (karaokeOnly ? 1 : 0) + (favOnly ? 1 : 0)
   const draftAfc = draftTypes.length + draftVibes.length + draftAreas.length + (draftMinRat ? 1 : 0) + (draftMusicOnly ? 1 : 0) + (draftKaraokeOnly ? 1 : 0)
@@ -498,13 +517,13 @@ export default function App() {
                 border: `1px solid ${view === 'map' ? 'var(--green-dim)' : 'var(--bd)'}`, borderRadius: 4,
                 color: view === 'map' ? 'var(--green)' : 'var(--text-faint)', cursor: 'pointer', fontSize: 12,
                 fontWeight: 700, whiteSpace: 'nowrap', fontFamily: 'var(--font-display)'
-              }}>{view === 'map' ? '⊞ List' : '📍 Map'}</button>
+              }}>{view === 'map' ? 'List' : 'Map'}</button>
               <button onClick={showFilters ? () => setShowFilters(false) : openFilters} style={{
                 padding: '9px 14px', background: afc ? 'rgba(200,169,110,0.1)' : 'var(--bg-card)',
                 border: `1px solid ${afc ? 'var(--gold-dim)' : 'var(--bd)'}`, borderRadius: 4,
                 color: afc ? 'var(--gold)' : 'var(--text-faint)', cursor: 'pointer', fontWeight: 700,
                 fontSize: 12, whiteSpace: 'nowrap', fontFamily: 'var(--font-display)'
-              }}>⚙{afc ? ` ${afc}` : ''}</button>
+              }}>Filters{afc ? ` (${afc})` : ''}</button>
             </div>
           )}
         </div>
@@ -529,7 +548,7 @@ export default function App() {
             <div style={{ margin: '8px 0' }}>
               <p style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-faint)', margin: '0 0 5px', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '2px' }}>Sort By</p>
               <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                {[{ v: 'rating', l: 'Top Rated' }, { v: 'reviews', l: 'Most Popular' }, { v: 'name', l: 'A–Z' }, { v: 'price', l: 'Price ↑' }].map(s => (
+                {[{ v: 'rating', l: 'Top Rated' }, { v: 'reviews', l: 'Most Popular' }, { v: 'distance', l: 'Nearest' }, { v: 'price', l: 'Price' }, { v: 'name', l: 'A–Z' }].map(s => (
                   <Chip key={s.v} active={draftSortBy === s.v} onClick={() => setDraftSortBy(s.v)} variant="type">{s.l}</Chip>
                 ))}
               </div>
@@ -551,8 +570,8 @@ export default function App() {
               <div style={{ display: 'flex', gap: 4 }}>{[0, 3.5, 4.0, 4.3, 4.5].map(r => <Chip key={r} active={draftMinRat === r} onClick={() => setDraftMinRat(r)}>{r === 0 ? 'Any' : `${r}+`}</Chip>)}</div>
             </div>
             <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
-              <Chip active={draftMusicOnly} onClick={() => setDraftMusicOnly(!draftMusicOnly)} variant="vibe">♪ Live Music</Chip>
-              <Chip active={draftKaraokeOnly} onClick={() => setDraftKaraokeOnly(!draftKaraokeOnly)} variant="vibe">🎤 Karaoke</Chip>
+              <Chip active={draftMusicOnly} onClick={() => setDraftMusicOnly(!draftMusicOnly)} variant="vibe">Live Music</Chip>
+              <Chip active={draftKaraokeOnly} onClick={() => setDraftKaraokeOnly(!draftKaraokeOnly)} variant="vibe">Karaoke</Chip>
             </div>
           </div>
         )}
