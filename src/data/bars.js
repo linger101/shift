@@ -103,9 +103,8 @@ export const BARS = [
   {id:101,name:"Purple Shamrock",hood:"Downtown",area:"Boston",type:"Pub",vibe:["Dancing","Late Night","Big Crowds","Karaoke"],music:false,karaoke:true,rating:3.8,revCt:1053,lat:42.3608,lng:-71.0562,price:2,desc:"Faneuil Hall party bar with DJs, dancing, and karaoke nights. Touristy but fun when you lean in."},
 
   // ─── South Boston additions ───
-  {id:102,name:"Shannon Tavern",hood:"South Boston",area:"Boston",type:"Dive Bar",vibe:["Cheap Drinks","Sports","Chill","Pool"],music:false,karaoke:false,rating:4.4,revCt:312,lat:42.3388,lng:-71.0530,price:1,desc:"Old-school Southie dive on West Broadway. Cheap beers, pool table, and locals who have been coming for decades."},
-  {id:103,name:"Murphy's Law",hood:"South Boston",area:"Boston",type:"Pub",vibe:["Sports","Late Night","Young Crowd"],music:false,karaoke:false,rating:4.2,revCt:487,lat:42.3395,lng:-71.0460,price:2,desc:"Southie neighborhood bar with a solid beer list, trivia nights, and a loyal after-work crowd."},
-  {id:104,name:"Local 149",hood:"South Boston",area:"Boston",type:"Pub",vibe:["Craft Beer","Brunch","Patio","Chill"],music:false,karaoke:false,rating:4.5,revCt:1183,lat:42.3375,lng:-71.0405,price:2,desc:"Former Southie firehouse turned craft beer destination. Outstanding brunch, great patio, and rotating local taps."},
+  {id:102,name:"Shannon Tavern",hood:"South Boston",area:"Boston",type:"Dive Bar",vibe:["Cheap Drinks","Sports","Chill","Pool"],music:false,karaoke:false,rating:4.4,revCt:312,lat:42.3366,lng:-71.0373,price:1,desc:"Old-school Southie dive on East 3rd Street. Cheap beers, pool table, and locals who have been coming for decades."},
+  {id:104,name:"Local 149",hood:"South Boston",area:"Boston",type:"Pub",vibe:["Craft Beer","Brunch","Patio","Chill"],music:false,karaoke:false,rating:4.5,revCt:1183,lat:42.3331,lng:-71.0271,price:2,desc:"Former Southie firehouse turned craft beer destination in City Point. Outstanding brunch, great patio, and rotating local taps."},
   {id:105,name:"The Shamrock",hood:"South Boston",area:"Boston",type:"Dive Bar",vibe:["Cash Only","Cheap Drinks","Sports"],music:false,karaoke:false,rating:4.3,revCt:198,lat:42.3345,lng:-71.0378,price:1,desc:"No-frills Southie watering hole. Cash only, cold beer, and deep neighborhood roots going back generations."},
 
   // ─── Downtown / Faneuil additions ───
@@ -202,6 +201,13 @@ export const BARS = [
 
   // ─── Roslindale ───
   {id:160,name:"Distraction Brewing",hood:"Roslindale",area:"Boston",type:"Brewery",vibe:["Craft Beer","Chill","Patio"],music:false,karaoke:false,rating:4.4,revCt:312,lat:42.2835,lng:-71.1250,price:2,desc:"Small-batch neighborhood brewery in Roslindale Village. Rotating taps, a cozy taproom, and a dog-friendly patio."},
+
+  // ─── New additions ───
+  {id:161,name:"Hunter's Kitchen & Bar",hood:"South Boston",area:"Boston",type:"Lounge",vibe:["Brunch","Date Night","Late Night"],music:false,karaoke:false,rating:4.4,revCt:385,lat:42.3351,lng:-71.0460,price:2,desc:"Soul food meets Southie on Dorchester Street. Craft cocktails, weekend brunch, and a late-night bar scene with real character."},
+  {id:162,name:"Small Victories",hood:"South Boston",area:"Boston",type:"Pub",vibe:["Craft Beer","Whiskey","Chill"],music:false,karaoke:false,rating:4.5,revCt:274,lat:42.3297,lng:-71.0566,price:2,desc:"Whiskey-forward neighborhood bar in Andrew Square from the owners of The Quiet Few. Scratch kitchen, craft beer, and a cozy local vibe."},
+  {id:163,name:"Cisco Brewers Fenway",hood:"Fenway",area:"Boston",type:"Brewery",vibe:["Patio","Big Crowds","Live Music","Sports"],music:true,karaoke:false,rating:4.3,revCt:645,lat:42.3448,lng:-71.0984,price:2,desc:"Nantucket-based Cisco Brewers outpost steps from Fenway Park. Outdoor beer garden, raw bar, and live entertainment. Opens early on game days."},
+  {id:164,name:"The Bullpen Kitchen + Tap",hood:"Fenway",area:"Boston",type:"Sports Bar",vibe:["Sports","Big Crowds","Late Night"],music:false,karaoke:false,rating:4.1,revCt:523,lat:42.3461,lng:-71.0988,price:2,desc:"Sports bar directly across from Fenway Park on Jersey Street. The pre-game and post-game hotspot with solid pub food and craft taps."},
+  {id:165,name:"The Tall Ship",hood:"East Boston",area:"Boston",type:"Rooftop Bar",vibe:["Views","Patio","Chill","Live Music"],music:true,karaoke:false,rating:4.4,revCt:892,lat:42.3648,lng:-71.0406,price:2,desc:"240-foot vessel turned floating oyster bar at Pier One in East Boston. Skyline views, seafood, live music, and food trucks. Seasonal, May through October."},
 ]
 
 export const ALL_TYPES = [...new Set(BARS.map(b => b.type))].sort()
@@ -249,4 +255,9 @@ export const BAR_WEBSITES = {
   117: 'https://www.societyonhigh.com',
   125: 'https://www.cheersboston.com',
   127: 'https://www.tiptaproom.com',
+  161: 'https://www.hunterssouthboston.com',
+  162: 'https://www.smallvictoriesbar.com',
+  163: 'https://www.ciscobrewersfenway.com',
+  164: 'https://www.thebullpenboston.com',
+  165: 'https://www.tallshipboston.com',
 }
