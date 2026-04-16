@@ -90,7 +90,7 @@ function NeighborhoodLabels() {
   useMapEvents({
     zoomend: (e) => setZoom(e.target.getZoom()),
   })
-  if (zoom < 14) return null
+  if (zoom < 13) return null
   return NEIGHBORHOODS.map(n => (
     <Marker
       key={n.name}
