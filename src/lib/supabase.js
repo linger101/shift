@@ -9,7 +9,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
   )
 }
 
-export const supabase = supabaseUrl && supabaseAnonKey
+const isValidUrl = (url) => { try { return /^https?:\/\//.test(new URL(url).href) } catch { return false } }
+
+export const supabase = supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl)
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null
 
