@@ -82,7 +82,6 @@ export const BARS = [
   {id:79,name:"Loretta's Last Call",hood:"Fenway",area:"Boston",type:"Lounge",vibe:["Dancing","Country","Live Music","Karaoke"],music:true,karaoke:true,rating:4.3,revCt:1356,lat:42.3468,lng:-71.0970,price:2,desc:"Nashville meets Lansdowne. Country music, line dancing, karaoke nights, and mechanical bull rides."},
   {id:80,name:"Courtside",hood:"Faneuil Hall",area:"Boston",type:"Sports Bar",vibe:["Karaoke","Sports","Big Crowds","Dancing"],music:false,karaoke:true,rating:4.0,revCt:1127,lat:42.3601,lng:-71.0552,price:2,desc:"Faneuil Hall sports bar with legendary Thursday karaoke nights. Three floors of mayhem."},
   {id:81,name:"Do Re Mi",hood:"Allston",area:"Allston/Brighton",type:"Activity Bar",vibe:["Karaoke","Groups","Late Night"],music:false,karaoke:true,rating:4.4,revCt:387,lat:42.3527,lng:-71.1319,price:2,desc:"Private karaoke rooms with thousands of songs in English, Korean, and Japanese. BYOB-friendly snacks."},
-  {id:82,name:"Drink",hood:"Seaport",area:"Boston",type:"Cocktail Bar",vibe:["Upscale","Date Night","Craft Cocktails"],music:false,karaoke:false,rating:4.6,revCt:3241,lat:42.3510,lng:-71.0481,price:3,desc:"No menu — tell the bartender what you like and they'll create something perfect. World-class."},
   {id:83,name:"Yvonne's",hood:"Downtown",area:"Boston",type:"Cocktail Bar",vibe:["Upscale","Date Night","Trendy","Late Night"],music:false,karaoke:false,rating:4.4,revCt:2876,lat:42.3548,lng:-71.0622,price:3,desc:"Glamorous supper club in the old Locke-Ober space. Stunning decor, creative cocktails, and scene-y vibes."},
   {id:84,name:"JJ Foley's Cafe",hood:"South End",area:"Boston",type:"Dive Bar",vibe:["Cash Only","Cheap Drinks","Chill"],music:false,karaoke:false,rating:4.4,revCt:613,lat:42.3474,lng:-71.0658,price:1,desc:"Family-run since 1909. Cash only, no-nonsense, and the cheapest drinks in the South End."},
   {id:85,name:"The Red Hat",hood:"Downtown",area:"Boston",type:"Dive Bar",vibe:["Cheap Drinks","Chill","Late Night"],music:false,karaoke:false,rating:4.3,revCt:487,lat:42.3607,lng:-71.0555,price:1,desc:"Classic Boston dive near Faneuil Hall. Cheap beers, friendly bartenders, and zero pretense."},
@@ -100,8 +99,48 @@ export const BARS = [
   {id:97,name:"The Druid",hood:"Inman Square",area:"Cambridge",type:"Irish Pub",vibe:["Chill","Cheap Drinks","Trivia"],music:false,karaoke:false,rating:4.5,revCt:621,lat:42.3737,lng:-71.1003,price:1,desc:"Tiny, authentic Irish pub. Wednesday trivia is legendary. Cash only, perfect Guinness."},
   {id:98,name:"Atwood's Tavern",hood:"Inman Square",area:"Cambridge",type:"Pub",vibe:["Live Music","Chill","Craft Beer"],music:true,karaoke:false,rating:4.5,revCt:438,lat:42.3738,lng:-71.0998,price:2,desc:"Live music 6 nights a week — Americana, folk, rock. Great food and a warm neighborhood feel."},
   {id:99,name:"Remnant Brewing",hood:"Bow Market",area:"Somerville",type:"Brewery",vibe:["Craft Beer","Trendy","Chill"],music:false,karaoke:false,rating:4.4,revCt:672,lat:42.3807,lng:-71.0940,price:2,desc:"Tiny Union Square taproom in Bow Market. Creative lagers, sours, and a communal vibe."},
-  {id:100,name:"The Harp",hood:"Downtown",area:"Boston",type:"Irish Pub",vibe:["Sports","Big Crowds","Late Night"],music:false,karaoke:false,rating:4.1,revCt:2341,lat:42.3610,lng:-71.0576,price:2,desc:"Massive Irish pub near the Garden. The go-to pre-game and post-game spot for Celtics and Bruins fans."},
+  {id:100,name:"The Harp",hood:"West End",area:"Boston",type:"Irish Pub",vibe:["Sports","Big Crowds","Late Night"],music:false,karaoke:false,rating:4.1,revCt:2341,lat:42.3658,lng:-71.0622,price:2,desc:"Massive Irish pub steps from TD Garden. The go-to pre-game and post-game spot for Celtics and Bruins fans."},
   {id:101,name:"Purple Shamrock",hood:"Downtown",area:"Boston",type:"Pub",vibe:["Dancing","Late Night","Big Crowds","Karaoke"],music:false,karaoke:true,rating:3.8,revCt:1053,lat:42.3608,lng:-71.0562,price:2,desc:"Faneuil Hall party bar with DJs, dancing, and karaoke nights. Touristy but fun when you lean in."},
+
+  // ─── South Boston additions ───
+  {id:102,name:"Shannon Tavern",hood:"South Boston",area:"Boston",type:"Dive Bar",vibe:["Cheap Drinks","Sports","Chill","Pool"],music:false,karaoke:false,rating:4.4,revCt:312,lat:42.3388,lng:-71.0530,price:1,desc:"Old-school Southie dive on West Broadway. Cheap beers, pool table, and locals who have been coming for decades."},
+  {id:103,name:"Murphy's Law",hood:"South Boston",area:"Boston",type:"Pub",vibe:["Sports","Late Night","Young Crowd"],music:false,karaoke:false,rating:4.2,revCt:487,lat:42.3395,lng:-71.0460,price:2,desc:"Southie neighborhood bar with a solid beer list, trivia nights, and a loyal after-work crowd."},
+  {id:104,name:"Local 149",hood:"South Boston",area:"Boston",type:"Pub",vibe:["Craft Beer","Brunch","Patio","Chill"],music:false,karaoke:false,rating:4.5,revCt:1183,lat:42.3375,lng:-71.0405,price:2,desc:"Former Southie firehouse turned craft beer destination. Outstanding brunch, great patio, and rotating local taps."},
+  {id:105,name:"The Shamrock",hood:"South Boston",area:"Boston",type:"Dive Bar",vibe:["Cash Only","Cheap Drinks","Sports"],music:false,karaoke:false,rating:4.3,revCt:198,lat:42.3345,lng:-71.0378,price:1,desc:"No-frills Southie watering hole. Cash only, cold beer, and deep neighborhood roots going back generations."},
+
+  // ─── Downtown / Faneuil additions ───
+  {id:106,name:"Mr. Dooley's",hood:"Financial District",area:"Boston",type:"Irish Pub",vibe:["Live Music","Chill","Big Crowds"],music:true,karaoke:false,rating:4.3,revCt:1456,lat:42.3567,lng:-71.0540,price:2,desc:"Traditional Irish pub on Broad Street with live music nightly, solid pub grub, and a Financial District after-work crowd."},
+  {id:107,name:"Black Rose",hood:"Faneuil Hall",area:"Boston",type:"Irish Pub",vibe:["Live Music","Big Crowds","Iconic"],music:true,karaoke:false,rating:4.2,revCt:4230,lat:42.3594,lng:-71.0558,price:2,desc:"Boston's most famous Irish pub since 1976. Live music every night, hearty food, and a Faneuil Hall institution."},
+  {id:108,name:"McGonagles",hood:"Downtown",area:"Boston",type:"Pub",vibe:["Late Night","Young Crowd","Dancing"],music:false,karaoke:false,rating:4.0,revCt:632,lat:42.3590,lng:-71.0565,price:2,desc:"Multi-level nightlife spot with DJs, dancing, and a prime downtown location near Faneuil Hall."},
+
+  // ─── TD Garden area ───
+  {id:109,name:"Greatest Bar",hood:"West End",area:"Boston",type:"Lounge",vibe:["Big Crowds","Dancing","Sports","Late Night"],music:false,karaoke:false,rating:3.9,revCt:2187,lat:42.3648,lng:-71.0612,price:2,desc:"Massive multi-floor venue near TD Garden. DJs, dancing, rooftop deck, and pre-game chaos on game nights."},
+  {id:110,name:"Banners Kitchen & Tap",hood:"West End",area:"Boston",type:"Sports Bar",vibe:["Sports","Big Crowds","Upscale"],music:false,karaoke:false,rating:4.3,revCt:1845,lat:42.3665,lng:-71.0616,price:2,desc:"State-of-the-art sports bar at the Hub on Causeway. Giant screens, craft beer, and steps from TD Garden."},
+  {id:111,name:"Hurricane's",hood:"West End",area:"Boston",type:"Sports Bar",vibe:["Sports","Big Crowds","Late Night"],music:false,karaoke:false,rating:3.8,revCt:967,lat:42.3655,lng:-71.0630,price:2,desc:"Game day headquarters near the Garden. Wings, pitchers, and wall-to-wall screens for every Boston game."},
+  {id:112,name:"Scores",hood:"West End",area:"Boston",type:"Sports Bar",vibe:["Sports","Big Crowds","Late Night"],music:false,karaoke:false,rating:3.9,revCt:743,lat:42.3650,lng:-71.0635,price:2,desc:"High-energy sports bar packed on Celtics and Bruins nights. Solid bar food and a rowdy atmosphere."},
+  {id:113,name:"Sullivan's Tap",hood:"West End",area:"Boston",type:"Dive Bar",vibe:["Cheap Drinks","Sports","Cash Only"],music:false,karaoke:false,rating:4.4,revCt:1523,lat:42.3645,lng:-71.0628,price:1,desc:"No-frills Canal Street dive. Cash only, cheap beers, and the ultimate pre-game pit stop before the Garden."},
+  {id:114,name:"Tavern in the Square",hood:"West End",area:"Boston",type:"Pub",vibe:["Sports","Big Crowds","Young Crowd","Brunch"],music:false,karaoke:false,rating:4.0,revCt:1290,lat:42.3660,lng:-71.0608,price:2,desc:"Sprawling pub near TD Garden with craft cocktails, TVs everywhere, and a reliable game-day atmosphere."},
+
+  // ─── Downtown cocktail / wine ───
+  {id:115,name:"Offsuit",hood:"Downtown",area:"Boston",type:"Cocktail Bar",vibe:["Speakeasy","Date Night","Trendy"],music:false,karaoke:false,rating:4.5,revCt:274,lat:42.3548,lng:-71.0580,price:3,desc:"Card-game-themed cocktail bar with inventive drinks, moody ambiance, and a hidden downtown vibe."},
+  {id:116,name:"Haley.Henry",hood:"Downtown Crossing",area:"Boston",type:"Wine Bar",vibe:["Date Night","Intimate","Chill"],music:false,karaoke:false,rating:4.6,revCt:385,lat:42.3558,lng:-71.0612,price:2,desc:"Intimate natural wine bar tucked in Downtown Crossing. Curated pours, small plates, and a calm escape from the city."},
+  {id:117,name:"Society on High",hood:"Financial District",area:"Boston",type:"Lounge",vibe:["Upscale","Date Night","Big Crowds","Late Night"],music:false,karaoke:false,rating:4.1,revCt:1087,lat:42.3556,lng:-71.0534,price:3,desc:"Massive multi-level venue in the Financial District. Upscale cocktails, velvet banquettes, and a see-and-be-seen crowd."},
+  {id:118,name:"Sip Wine Bar",hood:"Downtown",area:"Boston",type:"Wine Bar",vibe:["Date Night","Chill","Small Plates"],music:false,karaoke:false,rating:4.3,revCt:312,lat:42.3550,lng:-71.0590,price:2,desc:"Cozy downtown wine bar with an approachable list, charcuterie boards, and a relaxed after-work atmosphere."},
+
+  // ─── South End / Back Bay additions ───
+  {id:119,name:"Clery's",hood:"Back Bay",area:"Boston",type:"Pub",vibe:["Big Crowds","Late Night","Young Crowd","Dancing"],music:false,karaoke:false,rating:4.0,revCt:1634,lat:42.3475,lng:-71.0765,price:2,desc:"Multi-level Copley hangout with a rooftop bar, dancing, and a post-college crowd that packs it on weekends."},
+  {id:128,name:"Corner Tavern",hood:"Back Bay",area:"Boston",type:"Pub",vibe:["Sports","Young Crowd","Late Night"],music:false,karaoke:false,rating:4.1,revCt:567,lat:42.3498,lng:-71.0800,price:2,desc:"Boylston Street corner spot with a solid tap list, game-day energy, and a reliable Back Bay hangout."},
+  {id:129,name:"Back Bay Social",hood:"Back Bay",area:"Boston",type:"Pub",vibe:["Young Crowd","Big Crowds","Brunch","Late Night"],music:false,karaoke:false,rating:4.0,revCt:892,lat:42.3494,lng:-71.0785,price:2,desc:"Sprawling Back Bay venue with multiple bars, weekend brunch, and a scene that goes late on Boylston."},
+
+  // ─── Beacon Hill ───
+  {id:120,name:"The Sevens Ale House",hood:"Beacon Hill",area:"Boston",type:"Dive Bar",vibe:["Cash Only","Cheap Drinks","Chill"],music:false,karaoke:false,rating:4.6,revCt:892,lat:42.3578,lng:-71.0700,price:1,desc:"Beloved Beacon Hill dive on Charles Street. Cash only, no-frills, and the best cheap pint in the neighborhood."},
+  {id:121,name:"89 Charles",hood:"Beacon Hill",area:"Boston",type:"Cocktail Bar",vibe:["Date Night","Chill","Intimate"],music:false,karaoke:false,rating:4.4,revCt:203,lat:42.3583,lng:-71.0698,price:2,desc:"Intimate Charles Street cocktail spot with a carefully curated drinks menu and warm Beacon Hill charm."},
+  {id:122,name:"1928",hood:"Beacon Hill",area:"Boston",type:"Cocktail Bar",vibe:["Speakeasy","Date Night","Upscale"],music:false,karaoke:false,rating:4.5,revCt:347,lat:42.3608,lng:-71.0648,price:3,desc:"Prohibition-era themed cocktail lounge on Cambridge Street. Vintage decor, craft cocktails, and a hidden gem feel."},
+  {id:123,name:"21st Amendment",hood:"Beacon Hill",area:"Boston",type:"Pub",vibe:["Chill","Sports","Young Crowd"],music:false,karaoke:false,rating:4.3,revCt:1156,lat:42.3595,lng:-71.0638,price:2,desc:"State House watering hole popular with politicos, staffers, and locals. Solid pub fare and great beer selection."},
+  {id:124,name:"Teddy's on the Hill",hood:"Beacon Hill",area:"Boston",type:"Pub",vibe:["Chill","Date Night","Small Plates"],music:false,karaoke:false,rating:4.4,revCt:412,lat:42.3590,lng:-71.0678,price:2,desc:"Cozy Beacon Hill gastropub with creative cocktails, elevated comfort food, and a warm neighborhood vibe."},
+  {id:125,name:"Cheers",hood:"Beacon Hill",area:"Boston",type:"Pub",vibe:["Iconic","Big Crowds"],music:false,karaoke:false,rating:3.7,revCt:6842,lat:42.3554,lng:-71.0716,price:2,desc:"The bar that inspired the TV show. Tourist magnet with a gift shop upstairs and a proper pub downstairs on Beacon Street."},
+  {id:126,name:"Hill Tavern",hood:"Beacon Hill",area:"Boston",type:"Pub",vibe:["Young Crowd","Late Night","Sports","Brunch"],music:false,karaoke:false,rating:4.2,revCt:978,lat:42.3616,lng:-71.0653,price:2,desc:"Cambridge Street standby with a young crowd, solid burgers, and weekend brunch with boozy options."},
+  {id:127,name:"Tip Tap Room",hood:"Beacon Hill",area:"Boston",type:"Pub",vibe:["Craft Beer","Date Night","Small Plates"],music:false,karaoke:false,rating:4.3,revCt:1245,lat:42.3612,lng:-71.0640,price:2,desc:"Beacon Hill gastropub known for creative sliders, an impressive craft beer wall, and a stylish two-level layout."},
 ]
 
 export const ALL_TYPES = [...new Set(BARS.map(b => b.type))].sort()
@@ -130,7 +169,6 @@ export const BAR_WEBSITES = {
   74:  'https://www.dorchesterbeer.com',
   77:  'https://www.hongkongboston.com',
   79:  'https://www.lorettaslastcall.com',
-  82:  'https://www.drinkfortpoint.com',
   83:  'https://www.yvonnesboston.com',
   90:  'https://www.mcgreevys.com',
   92:  'https://www.aeronautbrewing.com',
@@ -138,4 +176,10 @@ export const BAR_WEBSITES = {
   94:  'https://www.nightshiftbrewing.com',
   95:  'https://www.trilliumbrewing.com',
   98:  'https://www.atwoodstavern.com',
+  104: 'https://www.local149.com',
+  107: 'https://www.blackroseboston.com',
+  110: 'https://www.bannerskitchenandtap.com',
+  117: 'https://www.societyonhigh.com',
+  125: 'https://www.cheersboston.com',
+  127: 'https://www.tiptaproom.com',
 }

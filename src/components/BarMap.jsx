@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MapContainer, TileLayer, Marker } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, ZoomControl } from 'react-leaflet'
 import L from 'leaflet'
 import { PRICE_LABELS } from '../data/bars'
 
@@ -93,6 +93,7 @@ export default function BarMap({ bars, user, onOpen, onFav }) {
         zoomControl={false}
         attributionControl={false}
       >
+        <ZoomControl position="topright" />
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
