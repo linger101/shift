@@ -15,7 +15,7 @@ export const supabase = supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null
 
-const SITE_URL = 'https://barcrawl-boston.vercel.app'
+const SITE_URL = 'https://shiftbar.vercel.app'
 
 // ─── Auth helpers ───
 
