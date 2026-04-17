@@ -261,7 +261,7 @@ function ReviewReplies({ reviewId, replies, currentUser, onAdd, onDelete }) {
 
 // ─── Auth Screen ───
 
-function Auth({ onLogin }) {
+function Auth({ onLogin, invitePreview }) {
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
@@ -308,6 +308,28 @@ function Auth({ onLogin }) {
           </div>
         </div>
         <p style={{ color: 'var(--text-faint)', fontSize: 13, margin: '0 0 24px' }}>Discover. Rate. Share with friends.</p>
+
+        {invitePreview && (
+          <div style={{
+            marginBottom: 20, padding: '12px 14px', background: 'rgba(74,103,65,0.08)',
+            border: '1px solid rgba(74,103,65,0.3)', borderRadius: 6, textAlign: 'left',
+          }}>
+            <p style={{ margin: 0, fontSize: 10, color: 'var(--green)', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>
+              You've been invited to
+            </p>
+            <p style={{ margin: '4px 0 0', fontSize: 15, fontWeight: 700, fontFamily: 'var(--font-display)', color: 'var(--text)' }}>
+              {invitePreview.name}
+            </p>
+            {invitePreview.night_date && (
+              <p style={{ margin: '2px 0 0', fontSize: 11, color: 'var(--text-faint)' }}>
+                {new Date(invitePreview.night_date).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
+              </p>
+            )}
+            <p style={{ margin: '6px 0 0', fontSize: 11, color: 'var(--text-dim)' }}>
+              Sign in or create an account to join.
+            </p>
+          </div>
+        )}
 
         {mode !== 'forgot' && (
           <div style={{ display: 'flex', marginBottom: 16, border: '1px solid var(--bd)', borderRadius: 4, overflow: 'hidden' }}>
@@ -425,6 +447,11 @@ export default function App() {
   // Review replies (shown on feed cards)
   const [replies, setReplies] = useState([])
 
+  // Night-out invite link flow
+  const [inviteToken, setInviteToken] = useState(null)
+  const [invitePreview, setInvitePreview] = useState(null)
+  const [pendingNightId, setPendingNightId] = useState(null) // opens NightOutDetail after redeem
+
   // Load session + data
   useEffect(() => {
     (async () => {
@@ -443,6 +470,39 @@ export default function App() {
       setReviews(r)
     })()
   }, [])
+
+  // Capture ?invite=<token> from the URL on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const token = params.get('invite')
+    if (!token) return
+    setInviteToken(token)
+    ;(async () => {
+      const preview = await db.getInvitePreview(token)
+      if (preview) setInvitePreview(preview)
+    })()
+  }, [])
+
+  // When we have a signed-in user AND a pending invite token, redeem it
+  useEffect(() => {
+    if (!user || !inviteToken) return
+    ;(async () => {
+      const nightId = await db.redeemInvite(inviteToken)
+      if (nightId) {
+        setPendingNightId(nightId)
+        setTab('activity')
+        setFriendsTab('nights')
+        await refreshFriends(user.id)
+      }
+      // Clear token + URL regardless so we don't keep re-running
+      setInviteToken(null)
+      setInvitePreview(null)
+      const url = new URL(window.location.href)
+      url.searchParams.delete('invite')
+      window.history.replaceState({}, '', url.toString())
+    })()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, inviteToken])
 
   // Load replies for all reviews, plus subscribe to realtime reply events
   useEffect(() => {
@@ -597,7 +657,7 @@ export default function App() {
 
   const tog = (arr, setArr, val) => setArr(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val])
 
-  if (showAuth) return <Auth onLogin={handleLogin} />
+  if (showAuth) return <Auth onLogin={handleLogin} invitePreview={invitePreview} />
 
   const userData = profile ? { ...profile, username: profile.username } : null
 
@@ -864,7 +924,13 @@ export default function App() {
 
                 {/* ── Night Outs ── */}
                 {friendsTab === 'nights' && (
-                  <NightOuts profile={profile} friends={friends} onOpenBar={setDetail} />
+                  <NightOuts
+                    profile={profile}
+                    friends={friends}
+                    onOpenBar={setDetail}
+                    targetNightId={pendingNightId}
+                    onTargetConsumed={() => setPendingNightId(null)}
+                  />
                 )}
 
                 {/* ── Manage Friends ── */}
