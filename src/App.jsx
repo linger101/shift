@@ -417,6 +417,7 @@ export default function App() {
   const [minRat, setMinRat] = useState(0)
   const [musicOnly, setMusicOnly] = useState(false)
   const [karaokeOnly, setKaraokeOnly] = useState(false)
+  const [poolOnly, setPoolOnly] = useState(false)
   const [favOnly, setFavOnly] = useState(false)
   const [sortBy, setSortBy] = useState('rating')
 
@@ -427,6 +428,7 @@ export default function App() {
   const [draftMinRat, setDraftMinRat] = useState(0)
   const [draftMusicOnly, setDraftMusicOnly] = useState(false)
   const [draftKaraokeOnly, setDraftKaraokeOnly] = useState(false)
+  const [draftPoolOnly, setDraftPoolOnly] = useState(false)
   const [draftSortBy, setDraftSortBy] = useState('rating')
 
   const [detail, setDetail] = useState(null)
@@ -581,6 +583,7 @@ export default function App() {
     setDraftMinRat(minRat)
     setDraftMusicOnly(musicOnly)
     setDraftKaraokeOnly(karaokeOnly)
+    setDraftPoolOnly(poolOnly)
     setDraftSortBy(sortBy)
     setShowFilters(true)
   }
@@ -592,6 +595,7 @@ export default function App() {
     setMinRat(draftMinRat)
     setMusicOnly(draftMusicOnly)
     setKaraokeOnly(draftKaraokeOnly)
+    setPoolOnly(draftPoolOnly)
     const newSort = draftSortBy
     setSortBy(newSort)
     setShowFilters(false)
@@ -605,7 +609,7 @@ export default function App() {
 
   const clearDraftFilters = () => {
     setDraftTypes([]); setDraftVibes([]); setDraftAreas([])
-    setDraftMinRat(0); setDraftMusicOnly(false); setDraftKaraokeOnly(false); setDraftSortBy('rating')
+    setDraftMinRat(0); setDraftMusicOnly(false); setDraftKaraokeOnly(false); setDraftPoolOnly(false); setDraftSortBy('rating')
   }
 
   const searchFriends = async () => {
@@ -670,6 +674,7 @@ export default function App() {
     if (minRat && b.rating < minRat) return false
     if (musicOnly && !b.music) return false
     if (karaokeOnly && !b.karaoke) return false
+    if (poolOnly && !b.pool) return false
     if (favOnly && userData && !userData.favorites?.includes(b.id)) return false
     return true
   })
@@ -680,8 +685,8 @@ export default function App() {
   else if (sortBy === 'price') filtered.sort((a, b) => a.price - b.price)
   else if (sortBy === 'distance' && userLocation) filtered.sort((a, b) => haversine(userLocation.lat, userLocation.lng, a.lat, a.lng) - haversine(userLocation.lat, userLocation.lng, b.lat, b.lng))
 
-  const afc = selTypes.length + selVibes.length + selAreas.length + (minRat ? 1 : 0) + (musicOnly ? 1 : 0) + (karaokeOnly ? 1 : 0) + (favOnly ? 1 : 0)
-  const draftAfc = draftTypes.length + draftVibes.length + draftAreas.length + (draftMinRat ? 1 : 0) + (draftMusicOnly ? 1 : 0) + (draftKaraokeOnly ? 1 : 0)
+  const afc = selTypes.length + selVibes.length + selAreas.length + (minRat ? 1 : 0) + (musicOnly ? 1 : 0) + (karaokeOnly ? 1 : 0) + (poolOnly ? 1 : 0) + (favOnly ? 1 : 0)
+  const draftAfc = draftTypes.length + draftVibes.length + draftAreas.length + (draftMinRat ? 1 : 0) + (draftMusicOnly ? 1 : 0) + (draftKaraokeOnly ? 1 : 0) + (draftPoolOnly ? 1 : 0)
 
   const friendIds = new Set(friends.map(f => f.id))
   const friendReviews = reviews.filter(r => friendIds.has(r.user_id)).slice(0, 20)
@@ -801,6 +806,7 @@ export default function App() {
             <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
               <Chip active={draftMusicOnly} onClick={() => setDraftMusicOnly(!draftMusicOnly)} variant="vibe">Live Music</Chip>
               <Chip active={draftKaraokeOnly} onClick={() => setDraftKaraokeOnly(!draftKaraokeOnly)} variant="vibe">Karaoke</Chip>
+              <Chip active={draftPoolOnly} onClick={() => setDraftPoolOnly(!draftPoolOnly)} variant="vibe">Pool Tables</Chip>
             </div>
           </div>
         )}
