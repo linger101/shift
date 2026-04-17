@@ -1,4 +1,4 @@
-# 🍺 Shift Boston
+# 🍺 Shift
 
 A social bar discovery app for Boston and surrounding neighborhoods. Browse 76 curated bars, filter by vibe/type/area, view on an interactive map, rate and review with friends.
 

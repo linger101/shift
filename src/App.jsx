@@ -853,7 +853,7 @@ export default function App() {
       {detail && <Detail bar={detail} user={userData} reviews={reviews} onClose={() => setDetail(null)} onFav={toggleFav} onReview={postReview} />}
 
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '20px 16px', textAlign: 'center', borderTop: '1px solid var(--bd)' }}>
-        <p style={{ margin: 0, fontSize: 9, color: 'var(--text-faint)', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '3px' }}>Shift Boston · {BARS.length} Establishments</p>
+        <p style={{ margin: 0, fontSize: 9, color: 'var(--text-faint)', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '3px' }}>Shift · {BARS.length} Establishments</p>
       </div>
     </div>
   )

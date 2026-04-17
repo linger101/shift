@@ -1,10 +1,10 @@
-# Shift Boston — Project Context
+# Shift — Project Context
 
 ## What this is
-A React web app for discovering, rating, and sharing Boston bars with friends. Live at https://barcrawl-boston.vercel.app
+A React web app for discovering, rating, and sharing Boston bars with friends. Live at https://shiftbar.vercel.app
 
 ## Repo
-https://github.com/linger101/barcrawl-boston
+https://github.com/linger101/shift
 
 ## Tech Stack
 - **Frontend**: React 18 + Vite
