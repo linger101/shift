@@ -1,4 +1,4 @@
-# 🍺 BarCrawl Boston
+# 🍺 Shift Boston
 
 A social bar discovery app for Boston and surrounding neighborhoods. Browse 76 curated bars, filter by vibe/type/area, view on an interactive map, rate and review with friends.
 
@@ -25,8 +25,8 @@ A social bar discovery app for Boston and surrounding neighborhoods. Browse 76 c
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/barcrawl-boston.git
-cd barcrawl-boston
+git clone https://github.com/YOUR_USERNAME/shift-boston.git
+cd shift-boston
 npm install
 ```
 
@@ -115,7 +115,7 @@ Push to GitHub → Vercel auto-deploys in ~30 seconds.
 ## Project Structure
 
 ```
-barcrawl-boston/
+shift-boston/
 ├── index.html              # Entry HTML
 ├── package.json
 ├── vite.config.js

@@ -1,4 +1,4 @@
-# BarCrawl Boston — Project Context
+# Shift Boston — Project Context
 
 ## What this is
 A React web app for discovering, rating, and sharing Boston bars with friends. Live at https://barcrawl-boston.vercel.app

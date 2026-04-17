@@ -1,4 +1,4 @@
--- BarCrawl Boston — Supabase Schema
+-- Shift Boston — Supabase Schema
 -- Run this in your Supabase SQL Editor (https://supabase.com/dashboard → SQL Editor)
 
 -- 1. Profiles table (extends Supabase auth.users)
