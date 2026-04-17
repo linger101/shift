@@ -244,6 +244,58 @@ export const BARS = [
   {id:191,name:"Hennessy's",hood:"Faneuil Hall",area:"Boston",type:"Irish Pub",vibe:["Live Music","Big Crowds","Dancing","Late Night"],music:true,karaoke:false,rating:4.0,revCt:1745,lat:42.3611,lng:-71.0569,price:2,desc:"Three-floor Union Street Irish pub with live music downstairs, a dance floor upstairs, and a rooftop bar. Stays packed on weekends."},
   {id:192,name:"The Point",hood:"Faneuil Hall",area:"Boston",type:"Pub",vibe:["Young Crowd","Late Night","Big Crowds"],music:false,karaoke:false,rating:4.0,revCt:987,lat:42.3622,lng:-71.0569,price:2,desc:"Hanover Street corner bar at the edge of Faneuil Hall. Solid cocktails, a young after-work crowd, and late nights that roll into the North End."},
   {id:193,name:"Green Dragon Tavern",hood:"Faneuil Hall",area:"Boston",type:"Pub",vibe:["Iconic","Live Music","Chill"],music:true,karaoke:false,rating:4.2,revCt:2156,lat:42.3608,lng:-71.0570,price:2,desc:"Marshall Street tavern trading on the name of the original 'Headquarters of the Revolution.' Live music, pub fare, and a piece of Boston bar history."},
+
+  // ─── Back Bay additions ───
+  {id:194,name:"Dani's Queer Bar",hood:"Back Bay",area:"Boston",type:"Lounge",vibe:["Inclusive","Dancing","Late Night","DJ"],music:false,karaoke:false,rating:4.6,revCt:287,lat:42.3486,lng:-71.0830,price:2,desc:"Boston's only dedicated lesbian and queer bar. Drag shows, dance nights, and Boston Magazine's 2025 Best New Nightlife Venue."},
+  {id:195,name:"Long Bar at Raffles",hood:"Back Bay",area:"Boston",type:"Cocktail Bar",vibe:["Upscale","Date Night","Views"],music:false,karaoke:false,rating:4.5,revCt:312,lat:42.3470,lng:-71.0758,price:3,desc:"17th-floor cocktail bar at Raffles Boston. Signature Singapore Slings, a sleek indoor lounge, and an outdoor terrace with Back Bay views."},
+  {id:196,name:"Krasi",hood:"Back Bay",area:"Boston",type:"Wine Bar",vibe:["Date Night","Small Plates","Trendy"],music:false,karaoke:false,rating:4.6,revCt:578,lat:42.3491,lng:-71.0830,price:3,desc:"Greek meze and wine bar with 180+ natural Greek bottles. One of Boston's most distinctive wine programs."},
+  {id:197,name:"Map Room Tea Lounge",hood:"Back Bay",area:"Boston",type:"Cocktail Bar",vibe:["Intimate","Date Night","Iconic"],music:false,karaoke:false,rating:4.5,revCt:243,lat:42.3491,lng:-71.0783,price:3,desc:"Tea-infused literary cocktails under Guastavino vaults inside the Boston Public Library. A hidden downtown escape."},
+
+  // ─── Downtown additions ───
+  {id:198,name:"The Last Hurrah",hood:"Downtown",area:"Boston",type:"Cocktail Bar",vibe:["Iconic","Whiskey","Chill"],music:false,karaoke:false,rating:4.3,revCt:687,lat:42.3575,lng:-71.0590,price:3,desc:"Classic cocktail bar inside the Omni Parker House, packed with political memorabilia. A true piece of old Boston."},
+  {id:199,name:"My Girl",hood:"Downtown",area:"Boston",type:"Cocktail Bar",vibe:["Trendy","Date Night","Late Night","Live Music"],music:true,karaoke:false,rating:4.5,revCt:164,lat:42.3568,lng:-71.0555,price:3,desc:"Pre-Castro Cuba-inspired cocktail lounge from COJE, tucked below Mariel. Martini-forward with live entertainment."},
+
+  // ─── Seaport additions ───
+  {id:200,name:"Coquette",hood:"Seaport",area:"Boston",type:"Cocktail Bar",vibe:["Upscale","Date Night","Trendy"],music:false,karaoke:false,rating:4.4,revCt:421,lat:42.3481,lng:-71.0441,price:3,desc:"French-style resto-bar inside the Omni Boston Seaport. Swanky cocktail program and an art-deco-meets-Paris vibe."},
+  {id:201,name:"Deck 12 at YOTEL",hood:"Seaport",area:"Boston",type:"Rooftop Bar",vibe:["Views","Trendy","Patio"],music:false,karaoke:false,rating:4.2,revCt:534,lat:42.3525,lng:-71.0461,price:3,desc:"12th-floor rooftop at YOTEL with indoor lounge and open-air terrace. Sweeping Seaport and harbor views."},
+
+  // ─── Dorchester additions ───
+  {id:202,name:"Eire Pub",hood:"Dorchester",area:"Dorchester",type:"Irish Pub",vibe:["Iconic","Chill","Cheap Drinks"],music:false,karaoke:false,rating:4.5,revCt:812,lat:42.2898,lng:-71.0620,price:1,desc:"Adams Village Irish pub made famous by Reagan and Clinton visits. Classic Dot institution with cheap drinks and real locals."},
+  {id:203,name:"Twelve Ben's",hood:"Dorchester",area:"Dorchester",type:"Dive Bar",vibe:["Cheap Drinks","Chill","Cash Only"],music:false,karaoke:false,rating:4.3,revCt:147,lat:42.2987,lng:-71.0605,price:1,desc:"No-frills Adams Street dive with cheap drinks and a loyal Dorchester crowd that's been coming for decades."},
+
+  // ─── South Boston addition ───
+  {id:204,name:"Gray's Hall",hood:"South Boston",area:"Boston",type:"Wine Bar",vibe:["Trendy","Date Night","Small Plates"],music:false,karaoke:false,rating:4.6,revCt:218,lat:42.3346,lng:-71.0401,price:2,desc:"Glowing, lights-strung natural wine bar on East Broadway from the American Provisions team. Southie's go-to for a quiet pour."},
+
+  // ─── East Boston addition ───
+  {id:205,name:"Taverna Medallo",hood:"East Boston",area:"Boston",type:"Lounge",vibe:["Late Night","Dancing","Groups"],music:false,karaoke:false,rating:4.4,revCt:312,lat:42.3788,lng:-71.0367,price:2,desc:"Colombian-leaning Chelsea Street bar with specialty cocktails, late-night energy, and a tight-knit Eastie crowd."},
+
+  // ─── Jamaica Plain additions ───
+  {id:206,name:"Midway Cafe",hood:"Jamaica Plain",area:"Jamaica Plain",type:"Dive Bar",vibe:["Live Music","Punk/DIY","Inclusive","Late Night"],music:true,karaoke:false,rating:4.5,revCt:567,lat:42.2976,lng:-71.1128,price:1,desc:"Punk, queer-friendly JP dive with live music nightly and the legendary long-running Queeraoke."},
+  {id:207,name:"Costello's Tavern",hood:"Jamaica Plain",area:"Jamaica Plain",type:"Pub",vibe:["Chill","Craft Beer","Cheap Drinks"],music:false,karaoke:false,rating:4.3,revCt:378,lat:42.3100,lng:-71.1136,price:2,desc:"Laid-back Centre Street neighborhood tavern with pub grub and a deep beer list. A dependable JP hang."},
+  {id:208,name:"Tres Gatos",hood:"Jamaica Plain",area:"Jamaica Plain",type:"Wine Bar",vibe:["Intimate","Date Night","Small Plates"],music:false,karaoke:false,rating:4.5,revCt:312,lat:42.3148,lng:-71.1104,price:2,desc:"Tiny cabin that's part restaurant, part bookstore, part record store. Focused wine and cocktail list, Spanish-inspired plates."},
+  {id:209,name:"Brassica Kitchen + Cafe",hood:"Jamaica Plain",area:"Jamaica Plain",type:"Cocktail Bar",vibe:["Trendy","Late Night","Date Night"],music:false,karaoke:false,rating:4.4,revCt:543,lat:42.2955,lng:-71.1142,price:2,desc:"Inventive sustainable beverage program and late-night cocktails on Washington Street. One of JP's most creative bars."},
+
+  // ─── Brookline additions ───
+  {id:210,name:"Hamilton Restaurant & Bar",hood:"Coolidge Corner",area:"Brookline",type:"Cocktail Bar",vibe:["Date Night","Upscale","Chill"],music:false,karaoke:false,rating:4.3,revCt:287,lat:42.3432,lng:-71.1245,price:3,desc:"Elevated Coolidge Corner cocktail bar with wings, steaks, and a big drinks program. Dressy but not fussy."},
+  {id:211,name:"Bar Lunette",hood:"Coolidge Corner",area:"Brookline",type:"Wine Bar",vibe:["Intimate","Date Night","Small Plates"],music:false,karaoke:false,rating:4.6,revCt:134,lat:42.3430,lng:-71.1225,price:2,desc:"Small, focused natural wine bar in Coolidge Corner. Thoughtful pours, sharp snacks, and a regulars-first vibe."},
+  {id:212,name:"Grainne O'Malley's",hood:"Coolidge Corner",area:"Brookline",type:"Irish Pub",vibe:["Sports","Chill","Craft Beer"],music:false,karaoke:false,rating:4.2,revCt:203,lat:42.3480,lng:-71.1303,price:2,desc:"Traditional Irish pub in the former Corrib space on Harvard Street. Guinness poured right and live sports on the TVs."},
+  {id:213,name:"Burro Bar",hood:"Washington Square",area:"Brookline",type:"Cocktail Bar",vibe:["Groups","Trendy","Dancing"],music:false,karaoke:false,rating:4.2,revCt:412,lat:42.3399,lng:-71.1359,price:2,desc:"Mexican cantina and tequila bar in Washington Square. Strong margaritas, tacos, and a lively weekend crowd."},
+
+  // ─── Cambridge additions ───
+  {id:214,name:"The Longfellow Bar",hood:"Harvard Square",area:"Cambridge",type:"Cocktail Bar",vibe:["Upscale","Date Night","Intimate"],music:false,karaoke:false,rating:4.5,revCt:267,lat:42.3740,lng:-71.1217,price:3,desc:"Upstairs cocktail bar above Alden & Harlow in the historic Cafe Algiers space. Sophisticated, intimate, and ingredient-driven."},
+  {id:215,name:"Moona",hood:"Inman Square",area:"Cambridge",type:"Cocktail Bar",vibe:["Trendy","Date Night","Small Plates"],music:false,karaoke:false,rating:4.5,revCt:456,lat:42.3748,lng:-71.1005,price:3,desc:"Eastern Mediterranean meze bar on Hampshire Street with cocktails built on cardamom, sumac, and rose."},
+  {id:216,name:"An Sibin",hood:"Harvard Square",area:"Cambridge",type:"Cocktail Bar",vibe:["Whiskey","Chill","Intimate"],music:false,karaoke:false,rating:4.6,revCt:156,lat:42.3725,lng:-71.1190,price:3,desc:"Whiskey bar on Bow Street with 140+ pours. Dark wood, serious drams, and an old-country feel in Harvard Square."},
+  {id:217,name:"Acqua & Bocca",hood:"Central Square",area:"Cambridge",type:"Wine Bar",vibe:["Date Night","Small Plates","Trendy"],music:false,karaoke:false,rating:4.4,revCt:187,lat:42.3649,lng:-71.1027,price:2,desc:"Italian apericena bar on Mass Ave, successor to Brick & Mortar. Aperitivi, low-ABV, and natural wine."},
+
+  // ─── Somerville additions ───
+  {id:218,name:"Tall Order",hood:"East Somerville",area:"Somerville",type:"Cocktail Bar",vibe:["Chill","Cheap Drinks","Young Crowd"],music:false,karaoke:false,rating:4.4,revCt:198,lat:42.3828,lng:-71.1018,price:2,desc:"Casual cocktail bar in the former Thirsty Scholar on Beacon Street. Burgers, sausage rolls, and every drink under $15."},
+  {id:219,name:"Bronwyn",hood:"Union Square",area:"Somerville",type:"Pub",vibe:["Craft Beer","Groups","Patio"],music:false,karaoke:false,rating:4.4,revCt:734,lat:42.3797,lng:-71.0950,price:2,desc:"German and Central European beer hall with sausages, schnitzels, giant pretzels, and a deep bier list."},
+  {id:220,name:"Rebel Rebel",hood:"Bow Market",area:"Somerville",type:"Wine Bar",vibe:["Intimate","Trendy","Small Plates"],music:false,karaoke:false,rating:4.6,revCt:345,lat:42.3807,lng:-71.0940,price:2,desc:"James Beard-semifinalist natural wine bar tucked into Bow Market. Tight list, sharp curation, and a tiny room."},
+  {id:221,name:"Lehrhaus",hood:"Union Square",area:"Somerville",type:"Cocktail Bar",vibe:["Trendy","Chill","Small Plates"],music:false,karaoke:false,rating:4.5,revCt:287,lat:42.3813,lng:-71.0925,price:2,desc:"World's first Jewish tavern and house of learning. Deli-inspired cocktails, Ashkenazi fare, and rotating study sessions."},
+  {id:222,name:"The Jungle Community Music Club",hood:"Union Square",area:"Somerville",type:"Lounge",vibe:["Live Music","Late Night","Trendy"],music:true,karaoke:false,rating:4.5,revCt:412,lat:42.3811,lng:-71.0944,price:2,desc:"Union Square music club in a converted police garage. Nightly live shows, food, drinks, and a welcoming scene."},
+  {id:223,name:"Foundry on Elm",hood:"Davis Square",area:"Somerville",type:"Pub",vibe:["Chill","Craft Beer","Date Night"],music:false,karaoke:false,rating:4.3,revCt:1287,lat:42.3960,lng:-71.1220,price:2,desc:"Long-running Davis Square gastropub with American fare and a solid cocktail list."},
+  {id:224,name:"Five Horses Tavern",hood:"Davis Square",area:"Somerville",type:"Pub",vibe:["Craft Beer","Whiskey","Chill"],music:false,karaoke:false,rating:4.3,revCt:876,lat:42.3958,lng:-71.1210,price:2,desc:"Craft-focused tavern on Highland Ave with 36 rotating drafts, 80 bottles, and 150+ whiskeys."},
+  {id:225,name:"Spoke Wine Bar",hood:"Davis Square",area:"Somerville",type:"Wine Bar",vibe:["Intimate","Date Night","Small Plates"],music:false,karaoke:false,rating:4.5,revCt:412,lat:42.3977,lng:-71.1245,price:2,desc:"Woman-owned intimate wine bar on Holland Street. Thoughtfully sourced pours and seasonal small plates."},
 ]
 
 export const ALL_TYPES = [...new Set(BARS.map(b => b.type))].sort()
@@ -313,4 +365,25 @@ export const BAR_WEBSITES = {
   191: 'https://www.hennessysboston.com',
   192: 'https://www.thepointboston.com',
   193: 'https://www.greendragontavern.com',
+  194: 'https://www.danisboston.com',
+  195: 'https://www.raffles.com/boston',
+  196: 'https://www.krasiboston.com',
+  198: 'https://www.omnihotels.com/hotels/boston-parker-house/dining/the-last-hurrah',
+  200: 'https://www.coquetteboston.com',
+  201: 'https://www.yotel.com/en/hotels/yotel-boston',
+  202: 'https://www.eirepub.com',
+  206: 'https://www.midwaycafe.com',
+  208: 'https://www.tresgatosjp.com',
+  209: 'https://www.brassicakitchen.com',
+  211: 'https://www.barlunette.com',
+  214: 'https://www.longfellowbar.com',
+  215: 'https://www.moonacambridge.com',
+  217: 'https://www.acquaebocca.com',
+  219: 'https://www.bronwynrestaurant.com',
+  220: 'https://www.rebelrebelsomerville.com',
+  221: 'https://www.lehrhaus.com',
+  222: 'https://www.thejunglecmc.com',
+  223: 'https://www.foundryonelm.com',
+  224: 'https://www.fivehorsestavern.com',
+  225: 'https://www.spokewinebar.com',
 }
