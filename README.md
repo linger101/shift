@@ -146,7 +146,6 @@ Currently uses **Oswald** (headlines) + **DM Sans** (body). Change in `index.htm
 
 ### Adding Features
 Some ideas for extending:
-- **Bar crawl planner** — build a route for a night out
 - **"Want to go" list** — separate from favorites
 - **Photo uploads** — let users add photos to reviews
 - **Happy hour info** — add time-based deals
