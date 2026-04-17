@@ -235,8 +235,7 @@ function Auth({ onLogin }) {
       <div style={{ width: '100%', maxWidth: 360, textAlign: 'center' }}>
         <div style={{ marginBottom: 24 }}>
           <div style={{ display: 'inline-block', padding: '16px 40px', border: '2px solid var(--gold)', borderRadius: 4 }}>
-            <h1 style={{ margin: '2px 0', fontSize: 32, fontFamily: 'var(--font-display)', color: 'var(--text)', fontWeight: 700 }}>BARCRAWL</h1>
-            <p style={{ margin: 0, fontSize: 15, fontFamily: 'var(--font-display)', color: 'var(--gold)' }}>Boston</p>
+            <h1 style={{ margin: '2px 0', fontSize: 32, fontFamily: 'var(--font-display)', color: 'var(--text)', fontWeight: 700 }}>SHIFT</h1>
           </div>
         </div>
         <p style={{ color: 'var(--text-faint)', fontSize: 13, margin: '0 0 24px' }}>Discover. Rate. Share with friends.</p>
@@ -525,8 +524,7 @@ export default function App() {
         <div style={{ maxWidth: 680, margin: '0 auto', padding: '10px 16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-              <h1 style={{ margin: 0, fontSize: 20, fontFamily: 'var(--font-display)', fontWeight: 700 }}>BARCRAWL</h1>
-              <span style={{ fontSize: 12, fontFamily: 'var(--font-display)', color: 'var(--gold)' }}>Boston</span>
+              <h1 style={{ margin: 0, fontSize: 20, fontFamily: 'var(--font-display)', fontWeight: 700 }}>SHIFT</h1>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               {userData && <span style={{ fontSize: 11, color: 'var(--gold)', fontWeight: 600, fontFamily: 'var(--font-display)' }}>@{userData.username}</span>}
@@ -855,7 +853,7 @@ export default function App() {
       {detail && <Detail bar={detail} user={userData} reviews={reviews} onClose={() => setDetail(null)} onFav={toggleFav} onReview={postReview} />}
 
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '20px 16px', textAlign: 'center', borderTop: '1px solid var(--bd)' }}>
-        <p style={{ margin: 0, fontSize: 9, color: 'var(--text-faint)', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '3px' }}>BarCrawl Boston · Est. 2025 · {BARS.length} Establishments</p>
+        <p style={{ margin: 0, fontSize: 9, color: 'var(--text-faint)', fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '3px' }}>Shift · {BARS.length} Establishments</p>
       </div>
     </div>
   )
