@@ -1,96 +1,8 @@
--- Shift — Supabase Schema
--- Run this in your Supabase SQL Editor (https://supabase.com/dashboard → SQL Editor)
+-- Shift — Friends features migration
+-- Run this in a NEW query in the Supabase SQL Editor.
+-- Safe to re-run (idempotent).
 
--- 1. Profiles table (extends Supabase auth.users)
-create table if not exists public.profiles (
-  id uuid references auth.users on delete cascade primary key,
-  username text unique not null,
-  favorites integer[] default '{}',
-  created_at timestamp with time zone default now()
-);
-
--- Enable RLS
-alter table public.profiles enable row level security;
-
--- Policies: users can read all profiles but only update their own
-create policy "Public profiles are viewable by everyone"
-  on public.profiles for select using (true);
-
-create policy "Users can update their own profile"
-  on public.profiles for update using (auth.uid() = id);
-
-create policy "Users can insert their own profile"
-  on public.profiles for insert with check (auth.uid() = id);
-
--- 2. Reviews table
-create table if not exists public.reviews (
-  id uuid default gen_random_uuid() primary key,
-  bar_id integer not null,
-  user_id uuid references auth.users on delete cascade not null,
-  username text not null,
-  rating integer not null check (rating >= 1 and rating <= 5),
-  text text not null,
-  created_at timestamp with time zone default now()
-);
-
--- Enable RLS
-alter table public.reviews enable row level security;
-
--- Policies: everyone can read reviews, authenticated users can insert
-create policy "Reviews are viewable by everyone"
-  on public.reviews for select using (true);
-
-create policy "Authenticated users can insert reviews"
-  on public.reviews for insert with check (auth.role() = 'authenticated');
-
--- 3. Auto-create profile on signup (trigger)
-create or replace function public.handle_new_user()
-returns trigger as $$
-begin
-  insert into public.profiles (id, username)
-  values (new.id, coalesce(new.raw_user_meta_data->>'username', 'user_' || left(new.id::text, 8)));
-  return new;
-end;
-$$ language plpgsql security definer;
-
--- Drop trigger if it exists, then create
-drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
-
--- 4. Enable realtime for reviews (so friends see updates live)
-alter publication supabase_realtime add table public.reviews;
-
--- 5. Friendships table
-create table if not exists public.friendships (
-  id uuid default gen_random_uuid() primary key,
-  requester_id uuid references auth.users on delete cascade not null,
-  addressee_id uuid references auth.users on delete cascade not null,
-  status text default 'pending' check (status in ('pending', 'accepted', 'declined')),
-  created_at timestamp with time zone default now(),
-  unique(requester_id, addressee_id)
-);
-
-alter table public.friendships enable row level security;
-
-create policy "Users can view their own friendships"
-  on public.friendships for select using (
-    auth.uid() = requester_id or auth.uid() = addressee_id
-  );
-
-create policy "Authenticated users can send friend requests"
-  on public.friendships for insert with check (auth.uid() = requester_id);
-
-create policy "Addressee can update friendship status"
-  on public.friendships for update using (auth.uid() = addressee_id);
-
-create policy "Either party can delete a friendship"
-  on public.friendships for delete using (
-    auth.uid() = requester_id or auth.uid() = addressee_id
-  );
-
--- 6. Review replies (flat thread on any review)
+-- 1. Review replies (flat thread on any review)
 create table if not exists public.review_replies (
   id uuid default gen_random_uuid() primary key,
   review_id uuid references public.reviews(id) on delete cascade not null,
@@ -114,9 +26,7 @@ drop policy if exists "Users can delete their own replies" on public.review_repl
 create policy "Users can delete their own replies"
   on public.review_replies for delete using (auth.uid() = user_id);
 
-alter publication supabase_realtime add table public.review_replies;
-
--- 7. Night Outs — collaborative bar-night planning with voting
+-- 2. Night Outs tables
 create table if not exists public.night_outs (
   id uuid default gen_random_uuid() primary key,
   creator_id uuid references auth.users on delete cascade not null,
@@ -154,8 +64,7 @@ create table if not exists public.night_out_votes (
   unique(night_out_id, user_id, bar_id)
 );
 
--- Helper: is user a member of (or creator of) this night out?
--- Security-definer to avoid recursive RLS when checking membership.
+-- 3. Membership helper (security-definer avoids recursive RLS)
 create or replace function public.is_night_out_member(p_night_out_id uuid, p_user_id uuid)
 returns boolean
 language sql
@@ -171,12 +80,12 @@ as $$
   );
 $$;
 
+-- 4. RLS
 alter table public.night_outs enable row level security;
 alter table public.night_out_members enable row level security;
 alter table public.night_out_picks enable row level security;
 alter table public.night_out_votes enable row level security;
 
--- night_outs policies
 drop policy if exists "Members can view night outs" on public.night_outs;
 create policy "Members can view night outs"
   on public.night_outs for select using (
@@ -195,7 +104,6 @@ drop policy if exists "Creator can delete night out" on public.night_outs;
 create policy "Creator can delete night out"
   on public.night_outs for delete using (auth.uid() = creator_id);
 
--- night_out_members policies — any member (or creator) can add more
 drop policy if exists "Members can view membership" on public.night_out_members;
 create policy "Members can view membership"
   on public.night_out_members for select using (
@@ -217,7 +125,6 @@ create policy "Members can leave or be removed"
     )
   );
 
--- night_out_picks policies
 drop policy if exists "Members can view picks" on public.night_out_picks;
 create policy "Members can view picks"
   on public.night_out_picks for select using (
@@ -234,7 +141,6 @@ drop policy if exists "Users can remove their own picks" on public.night_out_pic
 create policy "Users can remove their own picks"
   on public.night_out_picks for delete using (auth.uid() = user_id);
 
--- night_out_votes policies
 drop policy if exists "Members can view votes" on public.night_out_votes;
 create policy "Members can view votes"
   on public.night_out_votes for select using (
@@ -255,8 +161,23 @@ drop policy if exists "Users can remove their vote" on public.night_out_votes;
 create policy "Users can remove their vote"
   on public.night_out_votes for delete using (auth.uid() = user_id);
 
--- Realtime for live collaboration
-alter publication supabase_realtime add table public.night_outs;
-alter publication supabase_realtime add table public.night_out_members;
-alter publication supabase_realtime add table public.night_out_picks;
-alter publication supabase_realtime add table public.night_out_votes;
+-- 5. Realtime — wrap each add in a DO block so "already in publication" errors don't abort the migration
+do $$ begin
+  alter publication supabase_realtime add table public.review_replies;
+exception when duplicate_object then null; end $$;
+
+do $$ begin
+  alter publication supabase_realtime add table public.night_outs;
+exception when duplicate_object then null; end $$;
+
+do $$ begin
+  alter publication supabase_realtime add table public.night_out_members;
+exception when duplicate_object then null; end $$;
+
+do $$ begin
+  alter publication supabase_realtime add table public.night_out_picks;
+exception when duplicate_object then null; end $$;
+
+do $$ begin
+  alter publication supabase_realtime add table public.night_out_votes;
+exception when duplicate_object then null; end $$;

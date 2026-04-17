@@ -192,3 +192,214 @@ export async function getReviewsByUser(userId) {
     .order('created_at', { ascending: false })
   return data || []
 }
+
+// ─── Review Replies ───
+
+export async function getRepliesForReviews(reviewIds) {
+  if (!supabase || !reviewIds?.length) return []
+  const { data } = await supabase
+    .from('review_replies')
+    .select('*')
+    .in('review_id', reviewIds)
+    .order('created_at', { ascending: true })
+  return data || []
+}
+
+export async function addReply(reply) {
+  if (!supabase) return null
+  const { data, error } = await supabase.from('review_replies').insert(reply).select().single()
+  if (error) { console.error('addReply error:', error); return null }
+  return data
+}
+
+export async function deleteReply(replyId) {
+  if (!supabase) return
+  await supabase.from('review_replies').delete().eq('id', replyId)
+}
+
+export function subscribeToReplies(onChange) {
+  if (!supabase) return () => {}
+  const ch = supabase
+    .channel('review_replies_feed')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'review_replies' }, onChange)
+    .subscribe()
+  return () => { supabase.removeChannel(ch) }
+}
+
+// ─── Night Outs ───
+
+export async function getNightOuts(userId) {
+  if (!supabase || !userId) return []
+
+  // Nights where user is creator
+  const { data: owned } = await supabase
+    .from('night_outs')
+    .select('*')
+    .eq('creator_id', userId)
+
+  // Nights where user is a member
+  const { data: memberRows } = await supabase
+    .from('night_out_members')
+    .select('night_out_id')
+    .eq('user_id', userId)
+
+  const memberIds = (memberRows || []).map(r => r.night_out_id)
+  let joined = []
+  if (memberIds.length) {
+    const { data } = await supabase
+      .from('night_outs')
+      .select('*')
+      .in('id', memberIds)
+    joined = data || []
+  }
+
+  const all = [...(owned || []), ...joined]
+  const dedup = Object.values(Object.fromEntries(all.map(n => [n.id, n])))
+  return dedup.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+}
+
+export async function createNightOut({ creatorId, name, nightDate }) {
+  if (!supabase) return null
+  const { data, error } = await supabase
+    .from('night_outs')
+    .insert({ creator_id: creatorId, name, night_date: nightDate || null })
+    .select()
+    .single()
+  if (error) { console.error('createNightOut error:', error); return null }
+  // Auto-add creator as a member so RLS on child tables resolves cleanly
+  await supabase.from('night_out_members').insert({
+    night_out_id: data.id, user_id: creatorId, added_by: creatorId,
+  })
+  return data
+}
+
+export async function deleteNightOut(nightOutId) {
+  if (!supabase) return
+  await supabase.from('night_outs').delete().eq('id', nightOutId)
+}
+
+export async function getNightOutDetail(nightOutId) {
+  if (!supabase) return null
+  const [nightRes, membersRes, picksRes, votesRes] = await Promise.all([
+    supabase.from('night_outs').select('*').eq('id', nightOutId).single(),
+    supabase.from('night_out_members').select('*').eq('night_out_id', nightOutId),
+    supabase.from('night_out_picks').select('*').eq('night_out_id', nightOutId),
+    supabase.from('night_out_votes').select('*').eq('night_out_id', nightOutId),
+  ])
+  if (nightRes.error) { console.error('getNightOutDetail error:', nightRes.error); return null }
+
+  // Resolve usernames for members + pick owners in one query
+  const userIds = new Set()
+  ;(membersRes.data || []).forEach(m => userIds.add(m.user_id))
+  ;(picksRes.data || []).forEach(p => userIds.add(p.user_id))
+  userIds.add(nightRes.data.creator_id)
+
+  let profiles = []
+  if (userIds.size) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('id, username')
+      .in('id', [...userIds])
+    profiles = data || []
+  }
+  const profileMap = Object.fromEntries(profiles.map(p => [p.id, p]))
+
+  const members = (membersRes.data || []).map(m => ({
+    ...m, username: profileMap[m.user_id]?.username || 'unknown'
+  }))
+  const picks = (picksRes.data || []).map(p => ({
+    ...p, username: profileMap[p.user_id]?.username || 'unknown'
+  }))
+
+  return {
+    night: nightRes.data,
+    creator: profileMap[nightRes.data.creator_id] || null,
+    members,
+    picks,
+    votes: votesRes.data || [],
+  }
+}
+
+export async function addNightOutMember(nightOutId, userId, addedBy) {
+  if (!supabase) return null
+  const { data, error } = await supabase
+    .from('night_out_members')
+    .insert({ night_out_id: nightOutId, user_id: userId, added_by: addedBy })
+    .select()
+    .single()
+  if (error) { console.error('addNightOutMember error:', error); return null }
+  return data
+}
+
+export async function removeNightOutMember(memberRowId) {
+  if (!supabase) return
+  await supabase.from('night_out_members').delete().eq('id', memberRowId)
+}
+
+export async function addNightOutPick(nightOutId, userId, barId) {
+  if (!supabase) return null
+  const { data, error } = await supabase
+    .from('night_out_picks')
+    .insert({ night_out_id: nightOutId, user_id: userId, bar_id: barId })
+    .select()
+    .single()
+  if (error) { console.error('addNightOutPick error:', error); return null }
+  return data
+}
+
+export async function removeNightOutPick(pickId) {
+  if (!supabase) return
+  await supabase.from('night_out_picks').delete().eq('id', pickId)
+}
+
+export async function castNightOutVote(nightOutId, userId, barId, value) {
+  if (!supabase) return null
+  // Upsert on (night_out_id, user_id, bar_id)
+  const { data, error } = await supabase
+    .from('night_out_votes')
+    .upsert(
+      { night_out_id: nightOutId, user_id: userId, bar_id: barId, value },
+      { onConflict: 'night_out_id,user_id,bar_id' }
+    )
+    .select()
+    .single()
+  if (error) { console.error('castNightOutVote error:', error); return null }
+  return data
+}
+
+export async function clearNightOutVote(nightOutId, userId, barId) {
+  if (!supabase) return
+  await supabase
+    .from('night_out_votes')
+    .delete()
+    .eq('night_out_id', nightOutId)
+    .eq('user_id', userId)
+    .eq('bar_id', barId)
+}
+
+export function subscribeToNightOut(nightOutId, onChange) {
+  if (!supabase || !nightOutId) return () => {}
+  const ch = supabase
+    .channel(`night_out_${nightOutId}`)
+    .on('postgres_changes',
+      { event: '*', schema: 'public', table: 'night_out_picks', filter: `night_out_id=eq.${nightOutId}` },
+      onChange)
+    .on('postgres_changes',
+      { event: '*', schema: 'public', table: 'night_out_votes', filter: `night_out_id=eq.${nightOutId}` },
+      onChange)
+    .on('postgres_changes',
+      { event: '*', schema: 'public', table: 'night_out_members', filter: `night_out_id=eq.${nightOutId}` },
+      onChange)
+    .subscribe()
+  return () => { supabase.removeChannel(ch) }
+}
+
+export function subscribeToNightOutList(userId, onChange) {
+  if (!supabase || !userId) return () => {}
+  const ch = supabase
+    .channel(`night_out_list_${userId}`)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'night_outs' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'night_out_members' }, onChange)
+    .subscribe()
+  return () => { supabase.removeChannel(ch) }
+}
