@@ -236,7 +236,6 @@ function Auth({ onLogin }) {
         <div style={{ marginBottom: 24 }}>
           <div style={{ display: 'inline-block', padding: '16px 40px', border: '2px solid var(--gold)', borderRadius: 4 }}>
             <h1 style={{ margin: '2px 0', fontSize: 32, fontFamily: 'var(--font-display)', color: 'var(--text)', fontWeight: 700 }}>SHIFT</h1>
-            <p style={{ margin: 0, fontSize: 15, fontFamily: 'var(--font-display)', color: 'var(--gold)' }}>Boston</p>
           </div>
         </div>
         <p style={{ color: 'var(--text-faint)', fontSize: 13, margin: '0 0 24px' }}>Discover. Rate. Share with friends.</p>
@@ -526,7 +525,6 @@ export default function App() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
               <h1 style={{ margin: 0, fontSize: 20, fontFamily: 'var(--font-display)', fontWeight: 700 }}>SHIFT</h1>
-              <span style={{ fontSize: 12, fontFamily: 'var(--font-display)', color: 'var(--gold)' }}>Boston</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               {userData && <span style={{ fontSize: 11, color: 'var(--gold)', fontWeight: 600, fontFamily: 'var(--font-display)' }}>@{userData.username}</span>}
