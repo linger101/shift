@@ -30,7 +30,7 @@ const inputStyle = {
   borderRadius: 6, color: 'var(--text)', fontSize: 13, boxSizing: 'border-box',
 }
 
-export default function NightOuts({ profile, friends, onOpenBar }) {
+export default function NightOuts({ profile, friends, onOpenBar, targetNightId, onTargetConsumed }) {
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedId, setSelectedId] = useState(null)
@@ -44,6 +44,14 @@ export default function NightOuts({ profile, friends, onOpenBar }) {
   }, [profile])
 
   useEffect(() => { refresh() }, [refresh])
+
+  // Deep-link: if parent passed a targetNightId (from an invite redeem), open it
+  useEffect(() => {
+    if (targetNightId && targetNightId !== selectedId) {
+      setSelectedId(targetNightId)
+      onTargetConsumed?.()
+    }
+  }, [targetNightId, selectedId, onTargetConsumed])
 
   useEffect(() => {
     if (!profile) return
@@ -233,7 +241,7 @@ function NightOutDetail({ nightOutId, profile, friends, onBack, onOpenBar }) {
 
       {/* Header */}
       <div style={{ ...cardStyle, marginBottom: 14 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
           <div>
             <p style={{ margin: 0, fontSize: 20, fontWeight: 700, fontFamily: 'var(--font-display)' }}>{night.name}</p>
             <p style={{ margin: '4px 0 0', fontSize: 12, color: 'var(--text-faint)' }}>
@@ -247,6 +255,7 @@ function NightOutDetail({ nightOutId, profile, friends, onBack, onOpenBar }) {
             </button>
           )}
         </div>
+        <InviteLinkRow night={night} isCreator={isCreator} onRegenerated={refresh} />
       </div>
 
       {/* Members */}
@@ -371,6 +380,55 @@ function VoteBtn({ active, onClick, up }) {
       color: active ? '#fff' : 'var(--text-dim)', fontWeight: 700, fontSize: 12,
       display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
     }}>{up ? '▲' : '▼'}</button>
+  )
+}
+
+function InviteLinkRow({ night, isCreator, onRegenerated }) {
+  const [copied, setCopied] = useState(false)
+  const [regenerating, setRegenerating] = useState(false)
+
+  const link = `${window.location.origin}/?invite=${night.invite_token}`
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(link)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1800)
+    } catch {
+      // fallback — select via a temporary input
+      const el = document.createElement('input')
+      el.value = link
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1800)
+    }
+  }
+
+  const regenerate = async () => {
+    if (!confirm('Regenerate the invite link? The old link will stop working.')) return
+    setRegenerating(true)
+    await db.regenerateInviteToken(night.id)
+    setRegenerating(false)
+    onRegenerated?.()
+  }
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 10px', background: 'rgba(74,103,65,0.06)', border: '1px solid var(--bd)', borderRadius: 6 }}>
+      <span style={{
+        flex: 1, fontSize: 11, color: 'var(--text-dim)',
+        fontFamily: 'var(--font-display)', overflow: 'hidden',
+        textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+      }}>{link}</span>
+      <button onClick={copy} style={primaryBtn}>{copied ? 'Copied!' : 'Copy Link'}</button>
+      {isCreator && (
+        <button onClick={regenerate} disabled={regenerating} style={ghostBtn}>
+          {regenerating ? '…' : 'New'}
+        </button>
+      )}
+    </div>
   )
 }
 

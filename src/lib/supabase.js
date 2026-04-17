@@ -394,6 +394,34 @@ export function subscribeToNightOut(nightOutId, onChange) {
   return () => { supabase.removeChannel(ch) }
 }
 
+export async function regenerateInviteToken(nightOutId) {
+  if (!supabase) return null
+  // crypto.randomUUID is widely supported; fallback to DB-side default if needed
+  const newToken = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : undefined
+  const { data, error } = await supabase
+    .from('night_outs')
+    .update({ invite_token: newToken })
+    .eq('id', nightOutId)
+    .select('invite_token')
+    .single()
+  if (error) { console.error('regenerateInviteToken error:', error); return null }
+  return data.invite_token
+}
+
+export async function getInvitePreview(token) {
+  if (!supabase || !token) return null
+  const { data, error } = await supabase.rpc('get_night_out_by_invite', { p_token: token })
+  if (error) { console.error('getInvitePreview error:', error); return null }
+  return (data && data[0]) || null
+}
+
+export async function redeemInvite(token) {
+  if (!supabase || !token) return null
+  const { data, error } = await supabase.rpc('redeem_night_out_invite', { p_token: token })
+  if (error) { console.error('redeemInvite error:', error); return null }
+  return data // night_out_id or null
+}
+
 export function subscribeToNightOutList(userId, onChange) {
   if (!supabase || !userId) return () => {}
   const ch = supabase
