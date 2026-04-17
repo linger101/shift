@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { BARS, ALL_TYPES, ALL_VIBES, ALL_AREAS, PRICE_LABELS, BAR_WEBSITES } from './data/bars'
 import BarMap from './components/BarMap'
+import NightOuts from './components/NightOuts'
 import * as db from './lib/supabase'
 
 // ─── Shared Components ───
@@ -190,6 +191,74 @@ function Detail({ bar, user, reviews, onClose, onFav, onReview }) {
   )
 }
 
+// ─── Review Replies (flat thread) ───
+
+function ReviewReplies({ reviewId, replies, currentUser, onAdd, onDelete }) {
+  const [open, setOpen] = useState(false)
+  const [text, setText] = useState('')
+  const threadReplies = replies.filter(r => r.review_id === reviewId)
+
+  const submit = async (e) => {
+    e.stopPropagation()
+    if (!text.trim() || !currentUser) return
+    const t = text.trim()
+    setText('')
+    await onAdd(reviewId, t)
+  }
+
+  return (
+    <div onClick={e => e.stopPropagation()} style={{ marginTop: 8, borderTop: '1px solid var(--bd)', paddingTop: 8 }}>
+      <button onClick={() => setOpen(v => !v)} style={{
+        background: 'none', border: 'none', color: 'var(--text-faint)',
+        fontSize: 11, cursor: 'pointer', padding: 0,
+        fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '0.5px',
+      }}>
+        {threadReplies.length > 0
+          ? `${open ? '▾' : '▸'} ${threadReplies.length} repl${threadReplies.length === 1 ? 'y' : 'ies'}`
+          : `${open ? '▾' : '▸'} Reply`}
+      </button>
+
+      {open && (
+        <div style={{ marginTop: 8 }}>
+          {threadReplies.map(r => (
+            <div key={r.id} style={{ padding: '8px 10px', marginBottom: 4, background: 'rgba(200,169,110,0.06)', borderRadius: 4, borderLeft: '2px solid var(--gold-dim)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-display)' }}>@{r.username}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ fontSize: 10, color: 'var(--text-faint)' }}>{new Date(r.created_at).toLocaleDateString()}</span>
+                  {currentUser?.id === r.user_id && (
+                    <button onClick={() => onDelete(r.id)} style={{ background: 'none', border: 'none', color: 'var(--text-faint)', cursor: 'pointer', fontSize: 11, padding: 0 }}>✕</button>
+                  )}
+                </div>
+              </div>
+              <p style={{ margin: 0, fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.4 }}>{r.text}</p>
+            </div>
+          ))}
+
+          {currentUser ? (
+            <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+              <input
+                value={text} onChange={e => setText(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && submit(e)}
+                placeholder="Write a reply..."
+                style={{ flex: 1, padding: '7px 10px', background: '#fff', border: '1px solid var(--bd)', borderRadius: 4, color: 'var(--text)', fontSize: 12 }}
+              />
+              <button onClick={submit} disabled={!text.trim()} style={{
+                padding: '7px 12px', background: text.trim() ? 'var(--green)' : '#bbb',
+                border: 'none', borderRadius: 4, color: '#fff', fontWeight: 700,
+                cursor: text.trim() ? 'pointer' : 'default', fontSize: 10,
+                fontFamily: 'var(--font-display)', textTransform: 'uppercase',
+              }}>Send</button>
+            </div>
+          ) : (
+            <p style={{ margin: '6px 0 0', fontSize: 11, color: 'var(--text-faint)' }}>Sign in to reply.</p>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── Auth Screen ───
 
 function Auth({ onLogin }) {
@@ -349,9 +418,12 @@ export default function App() {
   const [outgoingRequests, setOutgoingRequests] = useState([])
   const [friendSearch, setFriendSearch] = useState('')
   const [friendResults, setFriendResults] = useState([])
-  const [friendsTab, setFriendsTab] = useState('feed') // 'feed' | 'manage' | 'requests'
+  const [friendsTab, setFriendsTab] = useState('feed') // 'feed' | 'manage' | 'requests' | 'nights'
   const [viewingFriend, setViewingFriend] = useState(null) // { id, username, friendshipId }
   const [friendProfileData, setFriendProfileData] = useState(null) // { reviews, favorites }
+
+  // Review replies (shown on feed cards)
+  const [replies, setReplies] = useState([])
 
   // Load session + data
   useEffect(() => {
@@ -371,6 +443,30 @@ export default function App() {
       setReviews(r)
     })()
   }, [])
+
+  // Load replies for all reviews, plus subscribe to realtime reply events
+  useEffect(() => {
+    if (!reviews.length) return
+    const reviewIds = reviews.map(r => r.id)
+    let cancelled = false
+    ;(async () => {
+      const rs = await db.getRepliesForReviews(reviewIds)
+      if (!cancelled) setReplies(rs)
+    })()
+    return () => { cancelled = true }
+  }, [reviews])
+
+  useEffect(() => {
+    if (!user) return
+    const unsub = db.subscribeToReplies((payload) => {
+      if (payload.eventType === 'INSERT') {
+        setReplies(prev => prev.some(r => r.id === payload.new.id) ? prev : [...prev, payload.new])
+      } else if (payload.eventType === 'DELETE') {
+        setReplies(prev => prev.filter(r => r.id !== payload.old.id))
+      }
+    })
+    return unsub
+  }, [user])
 
   const handleLogin = useCallback(async (u) => {
     if (!u) { setUser(null); setShowAuth(false); return }
@@ -403,6 +499,19 @@ export default function App() {
   const postReview = useCallback(async (review) => {
     const r = await db.addReview(review)
     if (r) setReviews(prev => [r, ...prev])
+  }, [])
+
+  const addReply = useCallback(async (reviewId, text) => {
+    if (!profile) return
+    const r = await db.addReply({
+      review_id: reviewId, user_id: profile.id, username: profile.username, text,
+    })
+    if (r) setReplies(prev => prev.some(x => x.id === r.id) ? prev : [...prev, r])
+  }, [profile])
+
+  const deleteReply = useCallback(async (replyId) => {
+    await db.deleteReply(replyId)
+    setReplies(prev => prev.filter(r => r.id !== replyId))
   }, [])
 
   const openFilters = () => {
@@ -707,10 +816,15 @@ export default function App() {
               <>
                 {/* Sub-nav */}
                 <div style={{ display: 'flex', gap: 0, marginBottom: 20, border: '1px solid var(--bd)', borderRadius: 6, overflow: 'hidden' }}>
-                  {[{ id: 'feed', l: 'Activity Feed' }, { id: 'manage', l: `Friends${friends.length ? ` (${friends.length})` : ''}` }, { id: 'requests', l: `Requests${(friendRequests.length + outgoingRequests.length) ? ` (${friendRequests.length + outgoingRequests.length})` : ''}` }].map((t, i) => (
+                  {[
+                    { id: 'feed', l: 'Feed' },
+                    { id: 'nights', l: 'Nights' },
+                    { id: 'manage', l: `Friends${friends.length ? ` (${friends.length})` : ''}` },
+                    { id: 'requests', l: `Requests${(friendRequests.length + outgoingRequests.length) ? ` (${friendRequests.length + outgoingRequests.length})` : ''}` },
+                  ].map((t, i, arr) => (
                     <button key={t.id} onClick={() => setFriendsTab(t.id)} style={{
                       flex: 1, padding: '9px 0', background: friendsTab === t.id ? 'rgba(74,103,65,0.1)' : 'transparent',
-                      border: 'none', borderRight: i < 2 ? '1px solid var(--bd)' : 'none',
+                      border: 'none', borderRight: i < arr.length - 1 ? '1px solid var(--bd)' : 'none',
                       color: friendsTab === t.id ? 'var(--green)' : 'var(--text-faint)', fontWeight: 700, cursor: 'pointer',
                       fontSize: 10, fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '1px'
                     }}>{t.l}</button>
@@ -722,10 +836,10 @@ export default function App() {
                   <>
                     {friends.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>Add friends to see their bar reviews here.</p>}
                     {friends.length > 0 && friendReviews.length === 0 && <p style={{ color: 'var(--text-faint)', fontSize: 13 }}>No reviews from friends yet.</p>}
-                    {friendReviews.map((r, i) => {
+                    {friendReviews.map((r) => {
                       const bar = BARS.find(b => b.id === r.bar_id)
                       return (
-                        <div key={i} onClick={() => bar && setDetail(bar)} style={{ padding: 14, marginBottom: 6, background: 'var(--bg-card)', borderRadius: 6, border: '1px solid var(--bd)', cursor: 'pointer', borderLeft: '2px solid var(--gold-dim)' }}>
+                        <div key={r.id} onClick={() => bar && setDetail(bar)} style={{ padding: 14, marginBottom: 6, background: 'var(--bg-card)', borderRadius: 6, border: '1px solid var(--bd)', cursor: 'pointer', borderLeft: '2px solid var(--gold-dim)' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                             <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-display)' }}>@{r.username}</span>
                             <span style={{ fontSize: 10, color: 'var(--text-faint)' }}>{new Date(r.created_at).toLocaleDateString()}</span>
@@ -735,10 +849,22 @@ export default function App() {
                             <Stars r={r.rating} sz={12} />
                           </div>
                           <p style={{ margin: 0, fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.4 }}>{r.text}</p>
+                          <ReviewReplies
+                            reviewId={r.id}
+                            replies={replies}
+                            currentUser={profile}
+                            onAdd={addReply}
+                            onDelete={deleteReply}
+                          />
                         </div>
                       )
                     })}
                   </>
+                )}
+
+                {/* ── Night Outs ── */}
+                {friendsTab === 'nights' && (
+                  <NightOuts profile={profile} friends={friends} onOpenBar={setDetail} />
                 )}
 
                 {/* ── Manage Friends ── */}
